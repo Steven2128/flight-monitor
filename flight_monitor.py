@@ -32,7 +32,7 @@ PRICES_FILE = "lowest_prices.json"
 # ============================================================
 
 def accept_cookies(page):
-    """Cierra banners de cookies/consent que bloquean el scraping."""
+    """Cierra banners de cookies/consent."""
     for text in ["Aceptar todo", "Accept all", "Agree", "I agree", "Aceptar"]:
         try:
             page.click(f"button:has-text('{text}')", timeout=2000)
@@ -41,58 +41,79 @@ def accept_cookies(page):
         except:
             pass
 
-def extract_prices(page):
-    """Extrae precios COP de la página por múltiples estrategias."""
-    cops = []
+def force_cop_currency(page):
+    """Cambia la moneda a COP desde el menú de Google Flights."""
+    try:
+        # Busca el botón de moneda (ej: "USD" o "$") y haz clic
+        page.click("[aria-label*='Currency'], [aria-label*='Moneda'], button:has-text('USD')", timeout=4000)
+        page.wait_for_timeout(1000)
+        # Busca COP en el dropdown
+        page.click("li:has-text('COP'), [data-value='COP'], span:has-text('Peso colombiano')", timeout=4000)
+        page.wait_for_timeout(2000)
+        print("    💱 Moneda cambiada a COP")
+    except:
+        pass  # si no aparece el selector, continuamos igual
 
-    # Estrategia 1: aria-label (más preciso)
+def extract_prices(page, currency="COP"):
+    """Extrae precios en la moneda dada."""
+    cops = []
+    is_cop = currency == "COP"
+    min_val = 50_000   if is_cop else 30
+    max_val = 5_000_000 if is_cop else 2_000
+
+    # Estrategia 1: aria-label
     try:
         labels = page.eval_on_selector_all(
             "[aria-label]",
             "els => els.map(e => e.getAttribute('aria-label'))"
         )
         for lbl in labels:
-            if lbl and ("COP" in lbl or "$" in lbl):
-                for n in re.findall(r'[\d]+[.\d]*[\d]', lbl):
+            if lbl and (currency in lbl or "$" in lbl):
+                for n in re.findall(r'[\d]+[.,\d]*[\d]', lbl):
                     val = float(n.replace(".", "").replace(",", ""))
-                    if 50_000 < val < 5_000_000:
+                    if min_val < val < max_val:
                         cops.append(val)
     except:
         pass
 
-    # Estrategia 2: texto visible de la página
+    # Estrategia 2: texto visible
     if not cops:
         try:
             body = page.inner_text("body")
-            for m in re.findall(r'\$\s*([\d]{2,3}(?:[.,]\d{3})+)', body):
+            pattern = r'\$\s*([\d]{2,3}(?:[.,]\d{3})+)' if is_cop else r'\$\s*(\d{2,4}(?:\.\d{2})?)'
+            for m in re.findall(pattern, body):
                 val = float(m.replace(".", "").replace(",", ""))
-                if 50_000 < val < 5_000_000:
+                if min_val < val < max_val:
                     cops.append(val)
         except:
             pass
 
-    # Estrategia 3: HTML completo
+    # Estrategia 3: HTML
     if not cops:
         try:
             html = page.content()
             for m in re.findall(r'(?:COP|"price":|>)\s*\$?\s*([\d]{3}(?:[.,]\d{3})+)', html):
                 val = float(m.replace(".", "").replace(",", ""))
-                if 50_000 < val < 5_000_000:
+                if min_val < val < max_val:
                     cops.append(val)
         except:
             pass
 
     return cops
 
+USD_TO_COP = 4_200  # tasa de cambio aproximada para conversión si es necesario
+
 def get_cheapest_price(origin, destination, dep_date):
+    # tt:o = solo ida | c:COP = pesos colombianos
     urls = [
-        f"https://www.google.com/travel/flights?hl=es-419#flt={origin}.{destination}.{dep_date};c:COP;e:1;sd:1;t:f",
-        f"https://www.google.com/travel/flights?hl=es-419&q=vuelos+{origin}+{destination}+{dep_date}",
+        f"https://www.google.com.co/travel/flights?hl=es-419#flt={origin}.{destination}.{dep_date};c:COP;e:1;sd:1;t:f;tt:o",
+        f"https://www.google.com/travel/flights?hl=es-419#flt={origin}.{destination}.{dep_date};c:COP;e:1;sd:1;t:f;tt:o",
     ]
     with sync_playwright() as pw:
         browser = pw.chromium.launch(
             headless=True,
-            args=["--no-sandbox", "--disable-dev-shm-usage", "--disable-blink-features=AutomationControlled"]
+            args=["--no-sandbox", "--disable-dev-shm-usage",
+                  "--disable-blink-features=AutomationControlled"]
         )
         ctx = browser.new_context(
             user_agent=(
@@ -101,31 +122,58 @@ def get_cheapest_price(origin, destination, dep_date):
                 "Chrome/124.0.0.0 Safari/537.36"
             ),
             locale="es-CO",
+            timezone_id="America/Bogota",
+            geolocation={"latitude": 4.711, "longitude": -74.0721},  # Bogotá
+            permissions=["geolocation"],
             viewport={"width": 1280, "height": 800},
+            extra_http_headers={
+                "Accept-Language": "es-CO,es;q=0.9",
+            },
         )
+
+        # Cookie para forzar COP en Google
+        ctx.add_cookies([{
+            "name": "CURRENCY", "value": "COP",
+            "domain": ".google.com", "path": "/"
+        }, {
+            "name": "CURRENCY", "value": "COP",
+            "domain": ".google.com.co", "path": "/"
+        }])
+
         page = ctx.new_page()
-        price, details = None, None
+        price, details, currency_used = None, None, "COP"
 
         for url in urls:
             try:
                 page.goto(url, wait_until="networkidle", timeout=40000)
                 page.wait_for_timeout(3000)
-                accept_cookies(page)          # ← cierra banner de cookies
-                page.wait_for_timeout(5000)   # espera que carguen los vuelos
+                accept_cookies(page)
+                force_cop_currency(page)     # ← intenta cambiar a COP desde UI
+                page.wait_for_timeout(5000)
 
-                cops = extract_prices(page)
+                # Intenta extraer en COP primero
+                cops = extract_prices(page, "COP")
+
+                # Si no hay COP, intenta USD y convierte
+                if not cops:
+                    usd_prices = extract_prices(page, "USD")
+                    if usd_prices:
+                        cops = [v * USD_TO_COP for v in usd_prices]
+                        currency_used = "USD→COP"
+                        print(f"    💱 Precios en USD convertidos a COP (x{USD_TO_COP})")
+
                 if cops:
                     price   = min(cops)
-                    details = {"source": "Google Flights", "url": url}
-                    break   # encontrado, no necesitamos el segundo URL
+                    details = {"source": "Google Flights", "url": url,
+                               "currency": currency_used}
+                    break
 
             except Exception as e:
-                print(f"    ⚠️  Error ({url[:50]}...): {e}")
+                print(f"    ⚠️  Error: {e}")
 
-        # Guarda screenshot si no encuentra precios (útil para debug)
         if price is None:
             try:
-                page.screenshot(path=f"debug_{origin}_{destination}.png")
+                page.screenshot(path=f"debug_{origin}_{destination}.png", full_page=True)
                 print(f"    📸 Screenshot guardado para debug")
             except:
                 pass

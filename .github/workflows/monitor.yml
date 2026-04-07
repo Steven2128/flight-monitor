@@ -36,6 +36,15 @@ jobs:
         run: |
           git config user.name "Flight Monitor Bot"
           git config user.email "bot@github.com"
-          git add lowest_prices.json
+          git add lowest_prices.json || true
           git diff --staged --quiet || git commit -m "chore: update lowest prices [skip ci]"
-          git push
+          git push || true
+
+      # Sube screenshots de debug si el scraping falló
+      - name: 📸 Subir screenshots de debug (si los hay)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-screenshots
+          path: "*.png"
+          if-no-files-found: ignore

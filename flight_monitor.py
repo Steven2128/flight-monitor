@@ -31,60 +31,106 @@ PRICES_FILE = "lowest_prices.json"
 # ✈️ SCRAPING GOOGLE FLIGHTS
 # ============================================================
 
+def accept_cookies(page):
+    """Cierra banners de cookies/consent que bloquean el scraping."""
+    for text in ["Aceptar todo", "Accept all", "Agree", "I agree", "Aceptar"]:
+        try:
+            page.click(f"button:has-text('{text}')", timeout=2000)
+            page.wait_for_timeout(1000)
+            return
+        except:
+            pass
+
+def extract_prices(page):
+    """Extrae precios COP de la página por múltiples estrategias."""
+    cops = []
+
+    # Estrategia 1: aria-label (más preciso)
+    try:
+        labels = page.eval_on_selector_all(
+            "[aria-label]",
+            "els => els.map(e => e.getAttribute('aria-label'))"
+        )
+        for lbl in labels:
+            if lbl and ("COP" in lbl or "$" in lbl):
+                for n in re.findall(r'[\d]+[.\d]*[\d]', lbl):
+                    val = float(n.replace(".", "").replace(",", ""))
+                    if 50_000 < val < 5_000_000:
+                        cops.append(val)
+    except:
+        pass
+
+    # Estrategia 2: texto visible de la página
+    if not cops:
+        try:
+            body = page.inner_text("body")
+            for m in re.findall(r'\$\s*([\d]{2,3}(?:[.,]\d{3})+)', body):
+                val = float(m.replace(".", "").replace(",", ""))
+                if 50_000 < val < 5_000_000:
+                    cops.append(val)
+        except:
+            pass
+
+    # Estrategia 3: HTML completo
+    if not cops:
+        try:
+            html = page.content()
+            for m in re.findall(r'(?:COP|"price":|>)\s*\$?\s*([\d]{3}(?:[.,]\d{3})+)', html):
+                val = float(m.replace(".", "").replace(",", ""))
+                if 50_000 < val < 5_000_000:
+                    cops.append(val)
+        except:
+            pass
+
+    return cops
+
 def get_cheapest_price(origin, destination, dep_date):
-    url = (
-        f"https://www.google.com/travel/flights?hl=es-419"
-        f"#flt={origin}.{destination}.{dep_date};c:COP;e:1;sd:1;t:f"
-    )
+    urls = [
+        f"https://www.google.com/travel/flights?hl=es-419#flt={origin}.{destination}.{dep_date};c:COP;e:1;sd:1;t:f",
+        f"https://www.google.com/travel/flights?hl=es-419&q=vuelos+{origin}+{destination}+{dep_date}",
+    ]
     with sync_playwright() as pw:
         browser = pw.chromium.launch(
             headless=True,
-            args=["--no-sandbox", "--disable-dev-shm-usage"]
+            args=["--no-sandbox", "--disable-dev-shm-usage", "--disable-blink-features=AutomationControlled"]
         )
-        ctx  = browser.new_context(
+        ctx = browser.new_context(
             user_agent=(
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
                 "AppleWebKit/537.36 (KHTML, like Gecko) "
                 "Chrome/124.0.0.0 Safari/537.36"
             ),
             locale="es-CO",
+            viewport={"width": 1280, "height": 800},
         )
         page = ctx.new_page()
         price, details = None, None
-        try:
-            page.goto(url, wait_until="networkidle", timeout=40000)
-            page.wait_for_timeout(5000)
 
-            # Intentar con aria-label
-            labels = page.eval_on_selector_all(
-                "[aria-label]",
-                "els => els.map(e => e.getAttribute('aria-label'))"
-            )
-            cops = []
-            for lbl in labels:
-                if lbl and ("COP" in lbl or "$" in lbl):
-                    for n in re.findall(r'[\d]+[.\d]*[\d]', lbl):
-                        val = float(n.replace(".", "").replace(",", ""))
-                        if 50_000 < val < 5_000_000:
-                            cops.append(val)
+        for url in urls:
+            try:
+                page.goto(url, wait_until="networkidle", timeout=40000)
+                page.wait_for_timeout(3000)
+                accept_cookies(page)          # ← cierra banner de cookies
+                page.wait_for_timeout(5000)   # espera que carguen los vuelos
 
-            # Fallback: texto completo
-            if not cops:
-                body = page.inner_text("body")
-                for m in re.findall(r'\$\s*([\d]{2,3}(?:[.,]\d{3})+)', body):
-                    val = float(m.replace(".", "").replace(",", ""))
-                    if 50_000 < val < 5_000_000:
-                        cops.append(val)
+                cops = extract_prices(page)
+                if cops:
+                    price   = min(cops)
+                    details = {"source": "Google Flights", "url": url}
+                    break   # encontrado, no necesitamos el segundo URL
 
-            if cops:
-                price   = min(cops)
-                details = {"source": "Google Flights", "url": url}
+            except Exception as e:
+                print(f"    ⚠️  Error ({url[:50]}...): {e}")
 
-        except Exception as e:
-            print(f"    ⚠️  Error: {e}")
-        finally:
-            browser.close()
+        # Guarda screenshot si no encuentra precios (útil para debug)
+        if price is None:
+            try:
+                page.screenshot(path=f"debug_{origin}_{destination}.png")
+                print(f"    📸 Screenshot guardado para debug")
+            except:
+                pass
 
+        browser.close()
     return price, details
 
 # ============================================================
@@ -122,6 +168,10 @@ def save_prices(data):
 # ============================================================
 
 def check_prices():
+    # Asegura que el archivo siempre existe (evita error en git)
+    if not os.path.exists(PRICES_FILE):
+        save_prices({})
+
     if date.today() > STOP_DATE:
         print("✅ Monitoreo terminado (pasó el 30 de abril).")
         return

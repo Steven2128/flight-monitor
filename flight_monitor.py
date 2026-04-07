@@ -1,34 +1,22 @@
 """
 ✈️ COLOMBIA FLIGHT PRICE MONITOR
-Scraping Google Flights con Playwright — sin registro, sin API keys
-
-Rutas:
-  BOG → SMR  |  8 junio 2026
-  SMR → MDE  |  11 junio 2026
-  MDE → BOG  |  15 junio 2026
-
-Corre cada 30 min hasta el 30 de abril de 2026
+Google Flights scraping con Playwright
+Diseñado para correr una vez por ejecución (GitHub Actions lo dispara cada 30 min)
 """
 
 import re
 import json
-import time
-import schedule
 import requests
 import os
 from datetime import datetime, date
 from playwright.sync_api import sync_playwright
 
 # ============================================================
-# 🔧 CONFIGURACIÓN — Solo llena estos dos campos
+# 🔧 CONFIGURACIÓN
 # ============================================================
 
 WHATSAPP_NUMBER  = "+573014091603"
 CALLMEBOT_APIKEY = "9481713"
-
-# ============================================================
-# 🗺️ RUTAS (no tocar)
-# ============================================================
 
 ROUTES = [
     {"origin": "BOG", "destination": "SMR", "date": "2026-06-08", "label": "Bogotá → Santa Marta"},
@@ -38,19 +26,16 @@ ROUTES = [
 
 STOP_DATE   = date(2026, 4, 30)
 PRICES_FILE = "lowest_prices.json"
-CHECK_EVERY = 30  # minutos (sin límite de API, sin problema)
 
 # ============================================================
 # ✈️ SCRAPING GOOGLE FLIGHTS
 # ============================================================
 
 def get_cheapest_price(origin, destination, dep_date):
-    """Abre Google Flights en modo headless y extrae el precio mínimo en COP."""
     url = (
         f"https://www.google.com/travel/flights?hl=es-419"
         f"#flt={origin}.{destination}.{dep_date};c:COP;e:1;sd:1;t:f"
     )
-
     with sync_playwright() as pw:
         browser = pw.chromium.launch(
             headless=True,
@@ -66,12 +51,11 @@ def get_cheapest_price(origin, destination, dep_date):
         )
         page = ctx.new_page()
         price, details = None, None
-
         try:
             page.goto(url, wait_until="networkidle", timeout=40000)
-            page.wait_for_timeout(5000)  # espera que cargue el JS
+            page.wait_for_timeout(5000)
 
-            # ── Intentar con aria-label primero (más preciso) ──
+            # Intentar con aria-label
             labels = page.eval_on_selector_all(
                 "[aria-label]",
                 "els => els.map(e => e.getAttribute('aria-label'))"
@@ -79,17 +63,15 @@ def get_cheapest_price(origin, destination, dep_date):
             cops = []
             for lbl in labels:
                 if lbl and ("COP" in lbl or "$" in lbl):
-                    nums = re.findall(r'[\d]+[.\d]*[\d]', lbl)
-                    for n in nums:
+                    for n in re.findall(r'[\d]+[.\d]*[\d]', lbl):
                         val = float(n.replace(".", "").replace(",", ""))
                         if 50_000 < val < 5_000_000:
                             cops.append(val)
 
-            # ── Fallback: texto completo de la página ──
+            # Fallback: texto completo
             if not cops:
                 body = page.inner_text("body")
-                matches = re.findall(r'\$\s*([\d]{2,3}(?:[.,]\d{3})+)', body)
-                for m in matches:
+                for m in re.findall(r'\$\s*([\d]{2,3}(?:[.,]\d{3})+)', body):
                     val = float(m.replace(".", "").replace(",", ""))
                     if 50_000 < val < 5_000_000:
                         cops.append(val)
@@ -99,7 +81,7 @@ def get_cheapest_price(origin, destination, dep_date):
                 details = {"source": "Google Flights", "url": url}
 
         except Exception as e:
-            print(f"    ⚠️  Playwright error: {e}")
+            print(f"    ⚠️  Error: {e}")
         finally:
             browser.close()
 
@@ -136,15 +118,15 @@ def save_prices(data):
         json.dump(data, f, indent=2, ensure_ascii=False)
 
 # ============================================================
-# 🔁 CHEQUEO PRINCIPAL
+# 🔁 CHEQUEO PRINCIPAL (corre una sola vez)
 # ============================================================
 
 def check_prices():
     if date.today() > STOP_DATE:
-        print("✅ Monitoreo terminado (pasó el 30 de abril). Apagando.")
-        raise SystemExit(0)
+        print("✅ Monitoreo terminado (pasó el 30 de abril).")
+        return
 
-    print(f"\n[{datetime.now().strftime('%Y-%m-%d %H:%M')}] Revisando precios...")
+    print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M')}] Revisando precios...")
     records = load_prices()
 
     for route in ROUTES:
@@ -178,22 +160,10 @@ def check_prices():
                 f"📅 Vuelo: {route['date']}\n"
                 f"💰 {fmt_price}\n"
                 f"📉 Anterior mínimo: {fmt_prev}\n"
-                f"🔗 Google Flights: {details['url']}\n"
+                f"🔗 {details['url']}\n"
                 f"👉 ¡Compra antes de que suba!"
             )
             ok = send_whatsapp(msg)
             print(f"     → 🆕 NUEVO MÍNIMO | WhatsApp: {'✅ enviado' if ok else '⚠️ falló'}")
 
-# ============================================================
-# 🚀 INICIO
-# ============================================================
-
-print("🛫 Monitor de vuelos iniciado!")
-print(f"   Revisando cada {CHECK_EVERY} min hasta {STOP_DATE}\n")
-
-check_prices()  # corre inmediatamente al arrancar
-schedule.every(CHECK_EVERY).minutes.do(check_prices)
-
-while True:
-    schedule.run_pending()
-    time.sleep(30)
+check_prices()

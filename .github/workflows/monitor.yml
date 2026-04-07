@@ -1,0 +1,41 @@
+name: ✈️ Flight Price Monitor
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'   # Cada 30 minutos
+  workflow_dispatch:           # También permite correrlo manualmente
+
+jobs:
+  check-prices:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Descargar el repo (incluye lowest_prices.json si ya existe)
+      - name: 📥 Checkout repo
+        uses: actions/checkout@v4
+
+      # 2. Instalar Python
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # 3. Instalar dependencias + Chromium
+      - name: 📦 Instalar dependencias
+        run: |
+          pip install playwright requests
+          playwright install chromium
+          playwright install-deps chromium
+
+      # 4. Correr el script
+      - name: 🔍 Revisar precios
+        run: python flight_monitor.py
+
+      # 5. Guardar lowest_prices.json de vuelta al repo
+      - name: 💾 Guardar precios mínimos
+        run: |
+          git config user.name "Flight Monitor Bot"
+          git config user.email "bot@github.com"
+          git add lowest_prices.json
+          git diff --staged --quiet || git commit -m "chore: update lowest prices [skip ci]"
+          git push

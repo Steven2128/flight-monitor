@@ -56,9 +56,7 @@ def fill_airport(page, index, code):
         box = page.get_by_role("combobox").nth(index)
         box.click(timeout=4000)
         page.wait_for_timeout(500)
-        box.triple_click()
-        page.keyboard.press("Control+a")
-        page.keyboard.press("Delete")
+        box.fill("")           # limpia el campo
         box.type(code, delay=120)
         page.wait_for_timeout(2000)
         page.keyboard.press("ArrowDown")

@@ -2,36 +2,50 @@ name: ✈️ Flight Price Monitor
 
 on:
   schedule:
-    - cron: '*/30 * * * *'   # Cada 30 minutos
-  workflow_dispatch:           # También permite correrlo manualmente
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
 
 jobs:
   check-prices:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Descargar el repo (incluye lowest_prices.json si ya existe)
       - name: 📥 Checkout repo
         uses: actions/checkout@v4
 
-      # 2. Instalar Python
       - name: 🐍 Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      # 3. Instalar dependencias + Chromium
+      # ── Caché de paquetes pip ──────────────────────────────
+      - name: 📦 Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: pip-
+
+      # ── Caché de Chromium (el más pesado, ~300 MB) ─────────
+      - name: 🌐 Cache Playwright browsers
+        id: cache-pw
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-chromium-1.44.0
+
       - name: 📦 Instalar dependencias
+        run: pip install -r requirements.txt
+
+      - name: 🌐 Instalar Chromium (solo si no está en caché)
+        if: steps.cache-pw.outputs.cache-hit != 'true'
         run: |
-          pip install playwright requests
           playwright install chromium
           playwright install-deps chromium
 
-      # 4. Correr el script
       - name: 🔍 Revisar precios
         run: python flight_monitor.py
 
-      # 5. Guardar lowest_prices.json de vuelta al repo
       - name: 💾 Guardar precios mínimos
         run: |
           git config user.name "Flight Monitor Bot"
@@ -40,11 +54,11 @@ jobs:
           git diff --staged --quiet || git commit -m "chore: update lowest prices [skip ci]"
           git push || true
 
-      # Sube screenshots de debug si el scraping falló
-      - name: 📸 Subir screenshots de debug (si los hay)
+      - name: 📸 Subir screenshots
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: debug-screenshots
+          name: screenshots-${{ github.run_number }}
           path: "*.png"
           if-no-files-found: ignore
+          retention-days: 2

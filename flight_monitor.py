@@ -50,27 +50,25 @@ def get_usd_to_cop():
     except:
         return 4_200  # fallback
 
-def fill_input(page, selectors, text):
-    """Intenta llenar un input probando varios selectores."""
-    for sel in selectors:
-        try:
-            el = page.locator(sel).first
-            el.click(timeout=2000)
-            page.wait_for_timeout(400)
-            el.triple_click()
-            page.keyboard.press("Control+a")
-            page.keyboard.press("Delete")
-            el.type(text, delay=100)
-            page.wait_for_timeout(1500)
-            # Seleccionar primera sugerencia del dropdown
-            page.keyboard.press("ArrowDown")
-            page.wait_for_timeout(400)
-            page.keyboard.press("Enter")
-            page.wait_for_timeout(800)
-            return True
-        except:
-            continue
-    return False
+def fill_airport(page, index, code):
+    """Llena el campo de aeropuerto (origen=0, destino=1) por índice de combobox."""
+    try:
+        box = page.get_by_role("combobox").nth(index)
+        box.click(timeout=4000)
+        page.wait_for_timeout(500)
+        box.triple_click()
+        page.keyboard.press("Control+a")
+        page.keyboard.press("Delete")
+        box.type(code, delay=120)
+        page.wait_for_timeout(2000)
+        page.keyboard.press("ArrowDown")
+        page.wait_for_timeout(400)
+        page.keyboard.press("Enter")
+        page.wait_for_timeout(800)
+        return True
+    except Exception as e:
+        print(f"    ⚠️  fill_airport({index}, {code}): {e}")
+        return False
 
 def extract_cop_prices(page):
     """Extrae precios en COP del texto visible."""
@@ -140,51 +138,23 @@ def get_cheapest_price(origin, destination, dep_date):
                 except:
                     continue
 
-            # 3. Origen — limpiar primero con tecla Escape y reabrir
-            origin_sels = [
-                "input[aria-label*='Origen']",
-                "input[placeholder*='Origen']",
-                "input[aria-label*='Where from']",
-                "[data-placeholder*='Origen'] input",
-            ]
-            # Limpiar campo origen (puede tener valor previo)
-            for sel in origin_sels:
-                try:
-                    page.click(sel, timeout=2000)
-                    page.keyboard.press("Control+a")
-                    page.keyboard.press("Delete")
-                    page.wait_for_timeout(300)
-                    break
-                except:
-                    continue
-            filled = fill_input(page, origin_sels, origin)
-            if not filled:
+            # 3. Llenar origen (combobox índice 0)
+            if not fill_airport(page, 0, origin):
                 raise Exception(f"No se pudo llenar origen: {origin}")
 
-            # 4. Destino
-            dest_sels = [
-                "input[aria-label*='Destino']",
-                "input[placeholder*='Destino']",
-                "input[aria-label*='Where to']",
-                "[data-placeholder*='Destino'] input",
-            ]
-            filled = fill_input(page, dest_sels, destination)
-            if not filled:
+            # 4. Llenar destino (combobox índice 1)
+            if not fill_airport(page, 1, destination):
                 raise Exception(f"No se pudo llenar destino: {destination}")
 
-            # 5. Fecha de salida
-            date_sels = [
-                "input[aria-label*='Salida']",
-                "input[aria-label*='Departure']",
-                "input[placeholder*='Ida']",
-            ]
-            for sel in date_sels:
+            # 5. Fecha — combobox índice 2 es usualmente la fecha de salida
+            try:
+                page.get_by_role("combobox").nth(2).click(timeout=3000)
+            except:
                 try:
-                    page.click(sel, timeout=2000)
-                    page.wait_for_timeout(800)
-                    break
+                    page.get_by_role("textbox").filter(has_text="").first.click(timeout=3000)
                 except:
-                    continue
+                    pass
+            page.wait_for_timeout(1000)
 
             # Navegar hasta junio 2026 en el calendario
             for _ in range(14):  # max 14 meses

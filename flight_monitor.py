@@ -32,83 +32,63 @@ PRICES_FILE = "lowest_prices.json"
 # ============================================================
 
 def accept_cookies(page):
-    """Cierra banners de cookies/consent."""
     for text in ["Aceptar todo", "Accept all", "Agree", "I agree", "Aceptar"]:
         try:
             page.click(f"button:has-text('{text}')", timeout=2000)
-            page.wait_for_timeout(1000)
+            page.wait_for_timeout(800)
             return
         except:
             pass
 
-def force_cop_currency(page):
-    """Cambia la moneda a COP desde el menú de Google Flights."""
+def get_usd_to_cop():
+    """Tasa de cambio USD→COP en tiempo real."""
     try:
-        # Busca el botón de moneda (ej: "USD" o "$") y haz clic
-        page.click("[aria-label*='Currency'], [aria-label*='Moneda'], button:has-text('USD')", timeout=4000)
-        page.wait_for_timeout(1000)
-        # Busca COP en el dropdown
-        page.click("li:has-text('COP'), [data-value='COP'], span:has-text('Peso colombiano')", timeout=4000)
-        page.wait_for_timeout(2000)
-        print("    💱 Moneda cambiada a COP")
+        r = requests.get("https://api.frankfurter.app/latest?from=USD&to=COP", timeout=5)
+        rate = r.json()["rates"]["COP"]
+        print(f"    💱 Tasa USD→COP: {rate:,.0f}")
+        return rate
     except:
-        pass  # si no aparece el selector, continuamos igual
+        return 4_200  # fallback
 
-def extract_prices(page, currency="COP"):
-    """Extrae precios en la moneda dada."""
+def fill_input(page, selectors, text):
+    """Intenta llenar un input probando varios selectores."""
+    for sel in selectors:
+        try:
+            el = page.locator(sel).first
+            el.click(timeout=2000)
+            page.wait_for_timeout(400)
+            el.triple_click()
+            page.keyboard.press("Control+a")
+            page.keyboard.press("Delete")
+            el.type(text, delay=100)
+            page.wait_for_timeout(1500)
+            # Seleccionar primera sugerencia del dropdown
+            page.keyboard.press("ArrowDown")
+            page.wait_for_timeout(400)
+            page.keyboard.press("Enter")
+            page.wait_for_timeout(800)
+            return True
+        except:
+            continue
+    return False
+
+def extract_cop_prices(page):
+    """Extrae precios en COP del texto visible."""
     cops = []
-    is_cop = currency == "COP"
-    min_val = 50_000   if is_cop else 30
-    max_val = 5_000_000 if is_cop else 2_000
-
-    # Estrategia 1: aria-label
     try:
-        labels = page.eval_on_selector_all(
-            "[aria-label]",
-            "els => els.map(e => e.getAttribute('aria-label'))"
-        )
-        for lbl in labels:
-            if lbl and (currency in lbl or "$" in lbl):
-                for n in re.findall(r'[\d]+[.,\d]*[\d]', lbl):
-                    val = float(n.replace(".", "").replace(",", ""))
-                    if min_val < val < max_val:
-                        cops.append(val)
+        body = page.inner_text("body")
+        # Formato colombiano: 189.000 / 1.234.567
+        for m in re.findall(r'\b(\d{1,3}(?:\.\d{3})+)\b', body):
+            val = float(m.replace(".", ""))
+            if 80_000 < val < 5_000_000:
+                cops.append(val)
     except:
         pass
-
-    # Estrategia 2: texto visible
-    if not cops:
-        try:
-            body = page.inner_text("body")
-            pattern = r'\$\s*([\d]{2,3}(?:[.,]\d{3})+)' if is_cop else r'\$\s*(\d{2,4}(?:\.\d{2})?)'
-            for m in re.findall(pattern, body):
-                val = float(m.replace(".", "").replace(",", ""))
-                if min_val < val < max_val:
-                    cops.append(val)
-        except:
-            pass
-
-    # Estrategia 3: HTML
-    if not cops:
-        try:
-            html = page.content()
-            for m in re.findall(r'(?:COP|"price":|>)\s*\$?\s*([\d]{3}(?:[.,]\d{3})+)', html):
-                val = float(m.replace(".", "").replace(",", ""))
-                if min_val < val < max_val:
-                    cops.append(val)
-        except:
-            pass
-
     return cops
 
-USD_TO_COP = 4_200  # tasa de cambio aproximada para conversión si es necesario
-
 def get_cheapest_price(origin, destination, dep_date):
-    # tt:o = solo ida | c:COP = pesos colombianos
-    urls = [
-        f"https://www.google.com.co/travel/flights?hl=es-419#flt={origin}.{destination}.{dep_date};c:COP;e:1;sd:1;t:f;tt:o",
-        f"https://www.google.com/travel/flights?hl=es-419#flt={origin}.{destination}.{dep_date};c:COP;e:1;sd:1;t:f;tt:o",
-    ]
+    usd_to_cop = get_usd_to_cop()
+
     with sync_playwright() as pw:
         browser = pw.chromium.launch(
             headless=True,
@@ -123,58 +103,155 @@ def get_cheapest_price(origin, destination, dep_date):
             ),
             locale="es-CO",
             timezone_id="America/Bogota",
-            geolocation={"latitude": 4.711, "longitude": -74.0721},  # Bogotá
-            permissions=["geolocation"],
             viewport={"width": 1280, "height": 800},
-            extra_http_headers={
-                "Accept-Language": "es-CO,es;q=0.9",
-            },
+            extra_http_headers={"Accept-Language": "es-CO,es;q=0.9"},
         )
-
-        # Cookie para forzar COP en Google
-        ctx.add_cookies([{
-            "name": "CURRENCY", "value": "COP",
-            "domain": ".google.com", "path": "/"
-        }, {
-            "name": "CURRENCY", "value": "COP",
-            "domain": ".google.com.co", "path": "/"
-        }])
-
         page = ctx.new_page()
-        price, details, currency_used = None, None, "COP"
+        price, details = None, None
 
-        for url in urls:
-            try:
-                page.goto(url, wait_until="networkidle", timeout=40000)
-                page.wait_for_timeout(3000)
-                accept_cookies(page)
-                force_cop_currency(page)     # ← intenta cambiar a COP desde UI
-                page.wait_for_timeout(5000)
+        try:
+            # 1. Ir a Google Flights con curr=COP
+            page.goto(
+                "https://www.google.com/travel/flights?hl=es-419&curr=COP",
+                wait_until="networkidle", timeout=40000
+            )
+            page.wait_for_timeout(2000)
+            accept_cookies(page)
+            page.wait_for_timeout(1000)
 
-                # Intenta extraer en COP primero
-                cops = extract_prices(page, "COP")
+            # 2. Cambiar a "Solo ida" — clic en el selector de tipo de viaje
+            trip_selectors = [
+                "div[jsname='UjMaPb']",
+                "[aria-label*='viaje'], [aria-label*='trip type']",
+                "div.VfPpkd-TkwUic",
+            ]
+            for sel in trip_selectors:
+                try:
+                    page.click(sel, timeout=2000)
+                    page.wait_for_timeout(600)
+                    break
+                except:
+                    continue
+            for opt in ["Solo ida", "One way"]:
+                try:
+                    page.click(f"li:has-text('{opt}')", timeout=2000)
+                    page.wait_for_timeout(500)
+                    break
+                except:
+                    continue
 
-                # Si no hay COP, intenta USD y convierte
-                if not cops:
-                    usd_prices = extract_prices(page, "USD")
-                    if usd_prices:
-                        cops = [v * USD_TO_COP for v in usd_prices]
-                        currency_used = "USD→COP"
-                        print(f"    💱 Precios en USD convertidos a COP (x{USD_TO_COP})")
+            # 3. Origen — limpiar primero con tecla Escape y reabrir
+            origin_sels = [
+                "input[aria-label*='Origen']",
+                "input[placeholder*='Origen']",
+                "input[aria-label*='Where from']",
+                "[data-placeholder*='Origen'] input",
+            ]
+            # Limpiar campo origen (puede tener valor previo)
+            for sel in origin_sels:
+                try:
+                    page.click(sel, timeout=2000)
+                    page.keyboard.press("Control+a")
+                    page.keyboard.press("Delete")
+                    page.wait_for_timeout(300)
+                    break
+                except:
+                    continue
+            filled = fill_input(page, origin_sels, origin)
+            if not filled:
+                raise Exception(f"No se pudo llenar origen: {origin}")
 
-                if cops:
-                    price   = min(cops)
-                    details = {"source": "Google Flights", "url": url,
-                               "currency": currency_used}
+            # 4. Destino
+            dest_sels = [
+                "input[aria-label*='Destino']",
+                "input[placeholder*='Destino']",
+                "input[aria-label*='Where to']",
+                "[data-placeholder*='Destino'] input",
+            ]
+            filled = fill_input(page, dest_sels, destination)
+            if not filled:
+                raise Exception(f"No se pudo llenar destino: {destination}")
+
+            # 5. Fecha de salida
+            date_sels = [
+                "input[aria-label*='Salida']",
+                "input[aria-label*='Departure']",
+                "input[placeholder*='Ida']",
+            ]
+            for sel in date_sels:
+                try:
+                    page.click(sel, timeout=2000)
+                    page.wait_for_timeout(800)
+                    break
+                except:
+                    continue
+
+            # Navegar hasta junio 2026 en el calendario
+            for _ in range(14):  # max 14 meses
+                try:
+                    header = page.locator("h2").filter(has_text="2026").inner_text(timeout=1000)
+                    if "jun" in header.lower():
+                        break
+                    page.click("button[aria-label*='siguiente'], button[aria-label*='Next']", timeout=2000)
+                    page.wait_for_timeout(400)
+                except:
                     break
 
-            except Exception as e:
-                print(f"    ⚠️  Error: {e}")
+            # Clic en el día exacto
+            day = str(int(dep_date.split("-")[2]))  # "08" → "8"
+            try:
+                page.click(f"[data-iso='{dep_date}']", timeout=3000)
+            except:
+                try:
+                    page.click(f"td[aria-label*='{day}'][aria-label*='junio']", timeout=3000)
+                except:
+                    pass
+            page.wait_for_timeout(500)
 
-        if price is None:
+            # Cerrar calendario
+            for btn in ["Listo", "Done", "Aceptar"]:
+                try:
+                    page.click(f"button:has-text('{btn}')", timeout=2000)
+                    break
+                except:
+                    continue
+            page.wait_for_timeout(800)
+
+            # 6. Buscar
+            for btn in ["Buscar", "Search"]:
+                try:
+                    page.click(f"button:has-text('{btn}')", timeout=3000)
+                    break
+                except:
+                    continue
+            page.wait_for_timeout(7000)  # esperar resultados
+
+            # 7. Screenshot de resultados para verificar
+            page.screenshot(path=f"result_{origin}_{destination}.png")
+
+            # 8. Extraer precios COP
+            cops = extract_cop_prices(page)
+
+            # Fallback: si sigue en USD, convertir con tasa real
+            if not cops:
+                body = page.inner_text("body")
+                usd_vals = []
+                for m in re.findall(r'(?<!\d)\$\s*(\d{2,4})(?!\d)', body):
+                    val = float(m)
+                    if 20 < val < 3000:
+                        usd_vals.append(val)
+                if usd_vals:
+                    cops = [v * usd_to_cop for v in usd_vals]
+                    print(f"    💱 Convertido {len(usd_vals)} precios USD→COP")
+
+            if cops:
+                price   = min(cops)
+                details = {"source": "Google Flights", "url": page.url}
+
+        except Exception as e:
+            print(f"    ⚠️  Error: {e}")
             try:
                 page.screenshot(path=f"debug_{origin}_{destination}.png", full_page=True)
-                print(f"    📸 Screenshot guardado para debug")
             except:
                 pass
 

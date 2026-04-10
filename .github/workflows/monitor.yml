@@ -1,64 +1,40 @@
-name: ✈️ Flight Price Monitor
+name: Monitor Vuelos BOG → SMR
 
 on:
   schedule:
-    - cron: '*/30 * * * *'
-  workflow_dispatch:
+    - cron: "0 13 * * *"   # cada día a las 8:00 AM hora Colombia (UTC-5)
+  workflow_dispatch:        # permite ejecutarlo manualmente desde GitHub
 
 jobs:
-  check-prices:
-    runs-on: ubuntu-22.04
+  monitor:
+    runs-on: ubuntu-latest
 
     steps:
-      - name: 📥 Checkout repo
+      - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: 🐍 Setup Python
+      - name: Configurar Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.12"
 
-      # ── Caché de paquetes pip ──────────────────────────────
-      - name: 📦 Cache pip
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: pip-${{ hashFiles('requirements.txt') }}
-          restore-keys: pip-
-
-      # ── Caché de Chromium (el más pesado, ~300 MB) ─────────
-      - name: 🌐 Cache Playwright browsers
-        id: cache-pw
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-chromium-1.44.0
-
-      - name: 📦 Instalar dependencias
-        run: pip install -r requirements.txt
-
-      - name: 🌐 Instalar Chromium (solo si no está en caché)
-        if: steps.cache-pw.outputs.cache-hit != 'true'
+      - name: Instalar dependencias
         run: |
+          pip install playwright
           playwright install chromium
           playwright install-deps chromium
 
-      - name: 🔍 Revisar precios
-        run: python flight_monitor.py
+      - name: Ejecutar monitor de vuelos
+        env:
+          CALLMEBOT_PHONE:  ${{ secrets.CALLMEBOT_PHONE }}
+          CALLMEBOT_APIKEY: ${{ secrets.CALLMEBOT_APIKEY }}
+          JSON_PATH: precios_minimos.json
+        run: python monitor_vuelos.py
 
-      - name: 💾 Guardar precios mínimos
+      - name: Guardar JSON actualizado en el repo
         run: |
-          git config user.name "Flight Monitor Bot"
-          git config user.email "bot@github.com"
-          git add lowest_prices.json || true
-          git diff --staged --quiet || git commit -m "chore: update lowest prices [skip ci]"
-          git push || true
-
-      - name: 📸 Subir screenshots
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: screenshots-${{ github.run_number }}
-          path: "*.png"
-          if-no-files-found: ignore
-          retention-days: 2
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add precios_minimos.json
+          git diff --cached --quiet || git commit -m "chore: actualizar precio mínimo BOG→SMR $(date -u +'%Y-%m-%d')"
+          git push

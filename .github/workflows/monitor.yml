@@ -2,7 +2,7 @@ name: Monitor Vuelos BOG → SMR
 
 on:
   schedule:
-    - cron: "0 13 * * *"   # cada día a las 8:00 AM hora Colombia (UTC-5)
+    - cron: "*/30 * * * *"  # cada 30 minutos
   workflow_dispatch:        # permite ejecutarlo manualmente desde GitHub
 
 jobs:
@@ -13,14 +13,26 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Configurar Python
+      - name: Configurar Python + cache pip
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+          cache: "pip"                  # cachea paquetes pip automáticamente
 
-      - name: Instalar dependencias
+      - name: Instalar dependencias pip
+        run: pip install -r requirements.txt
+
+      - name: Cache binarios Playwright
+        id: cache-playwright
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          # la clave cambia solo cuando cambia la versión de playwright en requirements.txt
+          key: playwright-chromium-${{ hashFiles('requirements.txt') }}
+
+      - name: Instalar Chromium (solo si no hay cache)
+        if: steps.cache-playwright.outputs.cache-hit != 'true'
         run: |
-          pip install playwright
           playwright install chromium
           playwright install-deps chromium
 

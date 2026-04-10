@@ -38,8 +38,8 @@ jobs:
 
       - name: Ejecutar monitor de vuelos
         env:
-          CALLMEBOT_PHONE:  ${{ secrets.CALLMEBOT_PHONE }}
-          CALLMEBOT_APIKEY: ${{ secrets.CALLMEBOT_APIKEY }}
+          CALLMEBOT_PHONE:  ${{ secrets.CALLMEBOT_PHONE || vars.CALLMEBOT_PHONE }}
+          CALLMEBOT_APIKEY: ${{ secrets.CALLMEBOT_APIKEY || vars.CALLMEBOT_APIKEY }}
           JSON_PATH: precios_minimos.json
         run: python monitor_vuelos.py
 

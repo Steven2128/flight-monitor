@@ -1,0 +1,22 @@
+{
+  "ruta": "BOG → SMR",
+  "origen": "Bogotá (BOG)",
+  "destino": "Santa Marta (SMR)",
+  "fecha_vuelo": "2026-06-07",
+  "historial": [
+    {
+      "fecha_consulta": "2026-04-10",
+      "precio_minimo_cop": 77580,
+      "aerolinea": "Avianca",
+      "tipo": "Directo",
+      "duracion_minima": "1h 30m",
+      "vuelo_mas_barato": {
+        "salida": "10:00",
+        "llegada": "11:30",
+        "duracion": "1h 30m",
+        "escalas": 0,
+        "precio_cop": 77580
+      }
+    }
+  ]
+}

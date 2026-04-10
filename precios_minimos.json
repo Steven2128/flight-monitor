@@ -199,6 +199,20 @@
         "salida": "10:00 a.m.",
         "llegada": "11:30 a.m."
       }
+    },
+    {
+      "fecha_consulta": "2026-04-10 11:42 UTC",
+      "precio_minimo_cop": 78080,
+      "aerolinea": "",
+      "tipo": "Con escala",
+      "duracion_minima": "",
+      "vuelo_mas_barato": {},
+      "opcion_reserva": {
+        "agencia": "Avianca",
+        "precio_cop": 78080,
+        "salida": "10:00 a.m.",
+        "llegada": "11:30 a.m."
+      }
     }
   ],
   "precio_minimo_historico": 78080

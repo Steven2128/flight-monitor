@@ -293,15 +293,11 @@ def main():
     precio_anterior = historial["historial"][-1]["precio_minimo_cop"] if historial["historial"] else None
     precio_min_historico = historial.get("precio_minimo_historico")
 
-    es_nuevo_minimo = precio_min_historico is None or precio_actual < precio_min_historico
-
-    # Actualizar mínimo histórico
-    if es_nuevo_minimo:
+    # Actualizar mínimo histórico si corresponde
+    if precio_min_historico is None or precio_actual < precio_min_historico:
         historial["precio_minimo_historico"] = precio_actual
         precio_min_historico = precio_actual
         print(f"🏆 Nuevo mínimo histórico: COP {precio_actual:,}")
-    else:
-        print(f"ℹ️  Sin nuevo mínimo (histórico: COP {precio_min_historico:,})")
 
     # Agregar entrada al historial (siempre)
     opcion_barata = resultado.get("opcion_barata", {})
@@ -318,13 +314,10 @@ def main():
 
     guardar_historial(historial)
 
-    # Notificar solo si hay nuevo mínimo histórico
-    if es_nuevo_minimo:
-        mensaje = construir_mensaje(precio_actual, precio_anterior, precio_min_historico, opcion_barata)
-        print(f"\n📩 Mensaje:\n{mensaje}\n")
-        enviar_whatsapp(mensaje)
-    else:
-        print("🔕 Sin notificación (precio no es nuevo mínimo)")
+    # Notificar siempre
+    mensaje = construir_mensaje(precio_actual, precio_anterior, precio_min_historico, opcion_barata)
+    print(f"\n📩 Mensaje:\n{mensaje}\n")
+    enviar_whatsapp(mensaje)
 
 
 if __name__ == "__main__":

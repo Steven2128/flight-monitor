@@ -563,6 +563,20 @@
         "salida": "1:50 p.m.",
         "llegada": "3:29 p.m."
       }
+    },
+    {
+      "fecha_consulta": "2026-04-11 14:28 UTC",
+      "precio_minimo_cop": 64520,
+      "aerolinea": "",
+      "tipo": "Con escala",
+      "duracion_minima": "",
+      "vuelo_mas_barato": {},
+      "opcion_reserva": {
+        "agencia": "JetSMART",
+        "precio_cop": 64520,
+        "salida": "1:50 p.m.",
+        "llegada": "3:29 p.m."
+      }
     }
   ],
   "precio_minimo_historico": 64520

@@ -1,57 +1,66 @@
-name: Monitor Vuelos BOG → SMR
+name: ✈️ Flight Price Monitor
 
 on:
   schedule:
-    - cron: "*/30 * * * *"  # cada 30 minutos
-  workflow_dispatch:        # permite ejecutarlo manualmente desde GitHub
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
 
 jobs:
-  monitor:
-    runs-on: ubuntu-latest
+  check-prices:
+    runs-on: ubuntu-22.04
 
     steps:
-      - name: Checkout repo
+      - name: 📥 Checkout repo
         uses: actions/checkout@v4
 
-      - name: Configurar Python + cache pip
+      - name: 🐍 Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
-          cache: "pip"                  # cachea paquetes pip automáticamente
+          python-version: '3.11'
 
-      - name: Instalar dependencias pip
-        run: pip install -r requirements.txt
+      # ── Caché de paquetes pip ──────────────────────────────
+      - name: 📦 Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: pip-
 
-      - name: Cache binarios Playwright
-        id: cache-playwright
+      # ── Caché de Chromium (el más pesado, ~300 MB) ─────────
+      - name: 🌐 Cache Playwright browsers
+        id: cache-pw
         uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
-          # la clave cambia solo cuando cambia la versión de playwright en requirements.txt
-          key: playwright-chromium-${{ hashFiles('requirements.txt') }}
+          key: playwright-chromium-1.50.0
 
-      - name: Instalar Chromium (solo si no hay cache)
-        if: steps.cache-playwright.outputs.cache-hit != 'true'
+      - name: 📦 Instalar dependencias
+        run: pip install -r requirements.txt
+
+      - name: 🌐 Instalar Chromium (solo si no está en caché)
+        if: steps.cache-pw.outputs.cache-hit != 'true'
         run: |
           playwright install chromium
+          # libasound2 es virtual en Ubuntu 22.04 reciente; instalar el proveedor real primero
+          sudo apt-get install -y libasound2t64 2>/dev/null || true
           playwright install-deps chromium
 
-      - name: Verificar variables
-        run: |
-          echo "PHONE configurado: ${{ vars.CALLMEBOT_PHONE != '' || secrets.CALLMEBOT_PHONE != '' }}"
-          echo "APIKEY configurado: ${{ vars.CALLMEBOT_APIKEY != '' || secrets.CALLMEBOT_APIKEY != '' }}"
+      - name: 🔍 Revisar precios
+        run: python flight_monitor.py
 
-      - name: Ejecutar monitor de vuelos
-        env:
-          CALLMEBOT_PHONE:  "573014091603"
-          CALLMEBOT_APIKEY: "9481713"
-          JSON_PATH: precios_minimos.json
-        run: python monitor_vuelos.py
-
-      - name: Guardar JSON actualizado en el repo
+      - name: 💾 Guardar precios mínimos
         run: |
-          git config user.name  "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add precios_minimos.json
-          git diff --cached --quiet || git commit -m "chore: actualizar precio mínimo BOG→SMR $(date -u +'%Y-%m-%d')"
-          git push
+          git config user.name "Flight Monitor Bot"
+          git config user.email "bot@github.com"
+          git add lowest_prices.json || true
+          git diff --staged --quiet || git commit -m "chore: update lowest prices [skip ci]"
+          git push || true
+
+      - name: 📸 Subir screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots-${{ github.run_number }}
+          path: "*.png"
+          if-no-files-found: ignore
+          retention-days: 2

@@ -46,7 +46,7 @@ jobs:
           playwright install-deps chromium
 
       - name: 🔍 Revisar precios
-        run: python flight_monitor.py
+        run: python monitor_vuelos.py
 
       - name: 💾 Guardar precios mínimos
         run: |

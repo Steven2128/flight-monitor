@@ -62,13 +62,13 @@ def extract_cop_prices(page):
         # Formato colombiano con puntos: 189.000 / 1.234.567
         for m in re.findall(r'\b(\d{1,3}(?:\.\d{3})+)\b', body):
             val = float(m.replace(".", ""))
-            if 80_000 < val < 5_000_000:
+            if val < 5_000_000:
                 cops.append(val)
-        # Formato con comas (US-style): 189,000 / 1,234,567
+        # Formato con comas (US-style): 64,487 / 189,000 / 1,234,567
         if not cops:
             for m in re.findall(r'\b(\d{1,3}(?:,\d{3})+)\b', body):
                 val = float(m.replace(",", ""))
-                if 80_000 < val < 5_000_000:
+                if val < 5_000_000:
                     cops.append(val)
     except:
         pass
@@ -132,32 +132,13 @@ def get_cheapest_price(origin, destination, dep_date):
             accept_cookies(page)
             page.wait_for_timeout(1500)
 
-            # 1. Cambiar a "Solo ida"
-            # El trip type es SPAN[jsname="Fb0Bif"]. Usar Playwright .click() nativo
-            # (incluye mousedown/mouseup/hover) en vez de dispatchEvent que no abre el dropdown.
+            # 1. Cambiar a "Solo ida" — get_by_role es más fiable que has-text
             try:
-                page.locator('span[jsname="Fb0Bif"]').first.click(timeout=4000)
-                page.wait_for_timeout(1000)
-                # Seleccionar "Solo ida" buscando cualquier elemento visible con ese texto
-                solo_clicked = page.evaluate("""
-                    (() => {
-                        for (const el of document.querySelectorAll('*')) {
-                            if (el.childElementCount === 0 && el.innerText && el.innerText.trim() === 'Solo ida') {
-                                const r = el.getBoundingClientRect();
-                                if (r.width > 0 && r.height > 0) {
-                                    el.dispatchEvent(new MouseEvent('click', {bubbles:true, cancelable:true, view:window}));
-                                    return true;
-                                }
-                            }
-                        }
-                        return false;
-                    })()
-                """)
+                page.locator('[role="combobox"]').first.click(timeout=4000)
+                page.wait_for_timeout(800)
+                page.get_by_role("option", name="Solo ida").click(timeout=3000)
                 page.wait_for_timeout(700)
-                if solo_clicked:
-                    print("    ✅ Solo ida seleccionado")
-                else:
-                    print("    ⚠️  Solo ida no encontrado en dropdown")
+                print("    ✅ Solo ida seleccionado")
             except Exception as e:
                 print(f"    ⚠️  Trip type: {e}")
 
@@ -187,60 +168,50 @@ def get_cheapest_price(origin, destination, dep_date):
 
             page.screenshot(path=f"step3_{origin}_{destination}.png")
 
-            # 4. Fecha de salida
+            # 4. Fecha de salida — abrir picker y usar data-iso directo (funciona sin navegar meses)
             try:
-                year, month, _ = dep_date.split("-")
-                target_month = MONTHS_ES[month]
-
                 # Abrir el date picker
                 date_opened = False
                 for date_sel in [
+                    'input[placeholder="Salida"]',
                     '[jsname="lBq2Xb"]',
                     '[aria-label*="Fecha de salida"]',
                     '[aria-label*="Salida"]',
-                    'input[jsname="yrriRe"]:nth-of-type(3)',
                 ]:
                     try:
                         page.click(date_sel, timeout=2000)
                         page.wait_for_timeout(1500)
                         date_opened = True
-                        print(f"    ✅ Fecha picker abierto ({date_sel})")
                         break
                     except:
                         continue
 
                 if not date_opened:
-                    print("    ⚠️  No se pudo abrir el date picker")
-                    raise Exception("date picker no abierto")
+                    # Fallback: clic en el textbox de fecha por placeholder
+                    page.get_by_placeholder("Salida").click(timeout=3000)
+                    page.wait_for_timeout(1500)
 
-                # Navegar al mes correcto
-                for _ in range(18):
-                    try:
-                        header = page.locator("h2").first.inner_text(timeout=1000).lower()
-                        if target_month in header and year in header:
-                            break
-                    except:
-                        pass
-                    try:
-                        page.click(
-                            'button[aria-label*="siguiente"], '
-                            'button[aria-label*="Next"], '
-                            'button[aria-label*="Mes siguiente"]',
-                            timeout=2000
-                        )
-                        page.wait_for_timeout(400)
-                    except:
-                        break
+                # Clic directo en la fecha por atributo data-iso (el calendario renderiza todos los meses)
+                clicked = page.evaluate(f"""
+                    (() => {{
+                        const el = document.querySelector('[data-iso="{dep_date}"]');
+                        if (el) {{ el.click(); return true; }}
+                        return false;
+                    }})()
+                """)
+                page.wait_for_timeout(600)
+                if not clicked:
+                    raise Exception(f"data-iso={dep_date} no encontrado en el DOM")
 
-                page.click(f'[data-iso="{dep_date}"]', timeout=5000)
+                # Cerrar el picker con el botón "Listo" / "Done"
+                page.evaluate("""
+                    (() => {
+                        const btn = Array.from(document.querySelectorAll('button'))
+                            .find(b => b.textContent.trim() === 'Listo' || b.textContent.trim() === 'Done');
+                        if (btn) btn.click();
+                    })()
+                """)
                 page.wait_for_timeout(500)
-
-                for done in ["Listo", "Done"]:
-                    try:
-                        page.click(f'button:has-text("{done}")', timeout=2000)
-                        break
-                    except:
-                        continue
                 print(f"    ✅ Fecha {dep_date} lista")
             except Exception as e:
                 print(f"    ⚠️  Fecha: {e}")
@@ -263,13 +234,21 @@ def get_cheapest_price(origin, destination, dep_date):
                 print("    ✅ Búsqueda iniciada (Enter)")
 
             # 6. Esperar resultados
-            page.wait_for_timeout(5000)
+            page.wait_for_timeout(7000)
             try:
                 page.wait_for_selector('li[data-resultid], [role="listitem"]', timeout=15000)
                 print("    ✅ Resultados cargados")
             except:
                 print("    ⏳ Timeout esperando resultados, extrayendo lo que hay...")
                 page.wait_for_timeout(5000)
+
+            # 6b. Seleccionar pestaña "Más económicos"
+            try:
+                page.get_by_role("tab", name=re.compile("más económicos", re.IGNORECASE)).click(timeout=5000)
+                page.wait_for_timeout(3000)
+                print("    ✅ Pestaña 'Más económicos' seleccionada")
+            except Exception as e:
+                print(f"    ⚠️  Pestaña más económicos: {e}")
 
             # 7. Screenshot
             page.screenshot(path=f"result_{origin}_{destination}.png")
@@ -359,6 +338,12 @@ def check_prices():
 
         if price is None:
             print("sin resultados.")
+            send_whatsapp(
+                f"⚠️ *Sin resultados*\n"
+                f"✈️ {route['label']}\n"
+                f"📅 Vuelo: {route['date']}\n"
+                f"No se encontraron precios en esta consulta."
+            )
             continue
 
         prev      = records.get(key, {}).get("price")
@@ -366,7 +351,8 @@ def check_prices():
         fmt_prev  = f"$ {prev:,.0f} COP" if prev else "ninguno aún"
         print(f"{fmt_price}  (mínimo anterior: {fmt_prev})")
 
-        if prev is None or price < prev:
+        is_new_min = prev is None or price < prev
+        if is_new_min:
             records[key] = {
                 "price":    price,
                 "details":  details,
@@ -374,16 +360,29 @@ def check_prices():
             }
             save_prices(records)
 
+        if is_new_min:
             msg = (
                 f"🚨 *NUEVO PRECIO MÍNIMO!*\n"
                 f"✈️ {route['label']}\n"
                 f"📅 Vuelo: {route['date']}\n"
-                f"💰 {fmt_price}\n"
-                f"📉 Anterior mínimo: {fmt_prev}\n"
+                f"💰 Precio actual: {fmt_price}\n"
+                f"📉 Mínimo histórico anterior: {fmt_prev}\n"
                 f"🔗 {details['url']}\n"
                 f"👉 ¡Compra antes de que suba!"
             )
-            ok = send_whatsapp(msg)
-            print(f"     → 🆕 NUEVO MÍNIMO | WhatsApp: {'✅ enviado' if ok else '⚠️ falló'}")
+        else:
+            fmt_hist = f"$ {prev:,.0f} COP"
+            msg = (
+                f"✈️ *Consulta de precios*\n"
+                f"✈️ {route['label']}\n"
+                f"📅 Vuelo: {route['date']}\n"
+                f"💰 Precio actual: {fmt_price}\n"
+                f"📉 Mínimo histórico: {fmt_hist}\n"
+                f"🔗 {details['url']}"
+            )
+
+        ok = send_whatsapp(msg)
+        status = "NUEVO MÍNIMO" if is_new_min else "consulta"
+        print(f"     → {'🆕' if is_new_min else '📊'} {status} | WhatsApp: {'✅ enviado' if ok else '⚠️ falló'}")
 
 check_prices()

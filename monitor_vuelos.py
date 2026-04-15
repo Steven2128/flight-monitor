@@ -20,8 +20,8 @@ from playwright.sync_api import sync_playwright
 # 🔧 CONFIGURACIÓN
 # ============================================================
 
-WHATSAPP_NUMBER  = "+573014091603"
-CALLMEBOT_APIKEY = "9481713"
+WHATSAPP_NUMBER  = "+573206655006"
+CALLMEBOT_APIKEY = "3310467"
 
 ROUTES = [
     {"origin": "BOG", "destination": "SMR", "date": "2026-06-07", "label": "Bogotá → Santa Marta"},

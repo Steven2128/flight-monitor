@@ -1,11 +1,11 @@
 {
   "BOG-SMR": {
-    "price": 64520.0,
+    "price": 1887.0,
     "details": {
       "source": "Google Flights",
       "url": "https://www.google.com/travel/flights/search?tfs=CBwQAhoeEgoyMDI2LTA2LTA3agcIARIDQk9HcgcIARIDU01SQAFIAXABggELCP___________wGYAQI&tfu=EgoIABAAGAAgAigB&hl=es-419&curr=COP"
     },
-    "found_at": "2026-04-12 02:35:23.266236"
+    "found_at": "2026-04-17 15:35:05.698197"
   },
   "MDE-BOG": {
     "price": 108930.0,

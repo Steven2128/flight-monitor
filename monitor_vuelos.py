@@ -8,23 +8,19 @@ import re
 import json
 import requests
 import os
-import sys
 from datetime import datetime, date
-
-# Fix Windows console encoding (emojis)
-if sys.stdout.encoding and sys.stdout.encoding.lower() != 'utf-8':
-    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 from playwright.sync_api import sync_playwright
 
 # ============================================================
 # 🔧 CONFIGURACIÓN
 # ============================================================
 
-WHATSAPP_NUMBER  = "+573206655006"
-CALLMEBOT_APIKEY = "3310467"
+TELEGRAM_BOT_TOKEN = "XXXXXXXX:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"  # Paso 1
+TELEGRAM_CHAT_ID   = "XXXXXXXXX"   # Paso 2
 
 ROUTES = [
-    {"origin": "BOG", "destination": "SMR", "date": "2026-06-07", "label": "Bogotá → Santa Marta"},
+    {"origin": "BOG", "destination": "SMR", "date": "2026-06-08", "label": "Bogotá → Santa Marta"},
+    {"origin": "SMR", "destination": "MDE", "date": "2026-06-11", "label": "Santa Marta → Medellín"},
     {"origin": "MDE", "destination": "BOG", "date": "2026-06-15", "label": "Medellín → Bogotá"},
 ]
 
@@ -54,49 +50,40 @@ def get_usd_to_cop():
     except:
         return 4_200  # fallback
 
+def fill_airport(page, index, code):
+    """Llena el campo de aeropuerto (origen=0, destino=1) por índice de combobox."""
+    try:
+        box = page.get_by_role("combobox").nth(index)
+        box.click(timeout=4000)
+        page.wait_for_timeout(500)
+        box.fill("")           # limpia el campo
+        box.type(code, delay=120)
+        page.wait_for_timeout(2000)
+        page.keyboard.press("ArrowDown")
+        page.wait_for_timeout(400)
+        page.keyboard.press("Enter")
+        page.wait_for_timeout(800)
+        return True
+    except Exception as e:
+        print(f"    ⚠️  fill_airport({index}, {code}): {e}")
+        return False
+
 def extract_cop_prices(page):
     """Extrae precios en COP del texto visible."""
     cops = []
     try:
         body = page.inner_text("body")
-        # Formato colombiano con puntos: 189.000 / 1.234.567
+        # Formato colombiano: 189.000 / 1.234.567
         for m in re.findall(r'\b(\d{1,3}(?:\.\d{3})+)\b', body):
             val = float(m.replace(".", ""))
-            if val < 5_000_000:
+            if 80_000 < val < 5_000_000:
                 cops.append(val)
-        # Formato con comas (US-style): 64,487 / 189,000 / 1,234,567
-        if not cops:
-            for m in re.findall(r'\b(\d{1,3}(?:,\d{3})+)\b', body):
-                val = float(m.replace(",", ""))
-                if val < 5_000_000:
-                    cops.append(val)
     except:
         pass
     return cops
 
-def select_airport(page, field_locator, code):
-    """Escribe el código de aeropuerto y selecciona la opción que contiene ese código."""
-    field_locator.click(timeout=4000)
-    page.wait_for_timeout(400)
-    page.keyboard.press("Control+A")
-    page.keyboard.press("Backspace")
-    page.wait_for_timeout(200)
-    page.keyboard.type(code, delay=80)
-    page.wait_for_timeout(2500)
-    # Seleccionar la opción que contiene el código IATA (evita clickear opciones de otro dropdown)
-    page.wait_for_selector(f'[role="option"]:has-text("{code}")', timeout=5000)
-    page.locator(f'[role="option"]:has-text("{code}")').first.click(timeout=3000)
-    page.wait_for_timeout(800)
-
-
 def get_cheapest_price(origin, destination, dep_date):
     usd_to_cop = get_usd_to_cop()
-
-    MONTHS_ES = {
-        "01": "enero",  "02": "febrero", "03": "marzo",    "04": "abril",
-        "05": "mayo",   "06": "junio",   "07": "julio",    "08": "agosto",
-        "09": "septiembre", "10": "octubre", "11": "noviembre", "12": "diciembre",
-    }
 
     with sync_playwright() as pw:
         browser = pw.chromium.launch(
@@ -116,147 +103,104 @@ def get_cheapest_price(origin, destination, dep_date):
             extra_http_headers={"Accept-Language": "es-CO,es;q=0.9"},
         )
         page = ctx.new_page()
-        page.add_init_script(
-            "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"
-        )
         price, details = None, None
 
         try:
+            # 1. Ir a Google Flights con curr=COP
             page.goto(
                 "https://www.google.com/travel/flights?hl=es-419&curr=COP",
-                wait_until="domcontentloaded", timeout=40000
+                wait_until="networkidle", timeout=40000
             )
-            # Esperar a que el formulario esté listo
-            page.wait_for_selector('input[role="combobox"]', timeout=15000)
             page.wait_for_timeout(2000)
             accept_cookies(page)
-            page.wait_for_timeout(1500)
+            page.wait_for_timeout(1000)
 
-            # 1. Cambiar a "Solo ida" — get_by_role es más fiable que has-text
-            try:
-                page.locator('[role="combobox"]').first.click(timeout=4000)
-                page.wait_for_timeout(800)
-                page.get_by_role("option", name="Solo ida").click(timeout=3000)
-                page.wait_for_timeout(700)
-                print("    ✅ Solo ida seleccionado")
-            except Exception as e:
-                print(f"    ⚠️  Trip type: {e}")
-
-            page.screenshot(path=f"step1_{origin}_{destination}.png")
-
-            # 2. Origen — jsname="yrriRe" nth(0)
-            try:
-                select_airport(page, page.locator('input[jsname="yrriRe"]').nth(0), origin)
-                print(f"    ✅ Origen {origin} listo")
-            except Exception as e:
-                print(f"    ⚠️  Origen: {e}")
-
-            # 3. Destino — después de seleccionar origen, Tab avanza al campo de destino.
-            # Esto evita el problema de clickear un input con display:none.
-            try:
-                page.wait_for_timeout(400)
-                page.keyboard.press("Tab")
-                page.wait_for_timeout(600)
-                page.keyboard.type(destination, delay=80)
-                page.wait_for_timeout(2500)
-                page.wait_for_selector(f'[role="option"]:has-text("{destination}")', timeout=5000)
-                page.locator(f'[role="option"]:has-text("{destination}")').first.click(timeout=3000)
-                page.wait_for_timeout(800)
-                print(f"    ✅ Destino {destination} listo")
-            except Exception as e:
-                print(f"    ⚠️  Destino: {e}")
-
-            page.screenshot(path=f"step3_{origin}_{destination}.png")
-
-            # 4. Fecha de salida — abrir picker y usar data-iso directo (funciona sin navegar meses)
-            try:
-                # Abrir el date picker
-                date_opened = False
-                for date_sel in [
-                    'input[placeholder="Salida"]',
-                    '[jsname="lBq2Xb"]',
-                    '[aria-label*="Fecha de salida"]',
-                    '[aria-label*="Salida"]',
-                ]:
-                    try:
-                        page.click(date_sel, timeout=2000)
-                        page.wait_for_timeout(1500)
-                        date_opened = True
-                        break
-                    except:
-                        continue
-
-                if not date_opened:
-                    # Fallback: clic en el textbox de fecha por placeholder
-                    page.get_by_placeholder("Salida").click(timeout=3000)
-                    page.wait_for_timeout(1500)
-
-                # Clic directo en la fecha por atributo data-iso (el calendario renderiza todos los meses)
-                clicked = page.evaluate(f"""
-                    (() => {{
-                        const el = document.querySelector('[data-iso="{dep_date}"]');
-                        if (el) {{ el.click(); return true; }}
-                        return false;
-                    }})()
-                """)
-                page.wait_for_timeout(600)
-                if not clicked:
-                    raise Exception(f"data-iso={dep_date} no encontrado en el DOM")
-
-                # Cerrar el picker con el botón "Listo" / "Done"
-                page.evaluate("""
-                    (() => {
-                        const btn = Array.from(document.querySelectorAll('button'))
-                            .find(b => b.textContent.trim() === 'Listo' || b.textContent.trim() === 'Done');
-                        if (btn) btn.click();
-                    })()
-                """)
-                page.wait_for_timeout(500)
-                print(f"    ✅ Fecha {dep_date} lista")
-            except Exception as e:
-                print(f"    ⚠️  Fecha: {e}")
-
-            page.screenshot(path=f"step4_{origin}_{destination}.png")
-            page.wait_for_timeout(500)
-
-            # 5. Buscar — NO "Explorar" (ese abre explorar destinos, no buscar vuelo)
-            searched = False
-            for btn in ["Buscar", "Search"]:
+            # 2. Cambiar a "Solo ida" — clic en el selector de tipo de viaje
+            trip_selectors = [
+                "div[jsname='UjMaPb']",
+                "[aria-label*='viaje'], [aria-label*='trip type']",
+                "div.VfPpkd-TkwUic",
+            ]
+            for sel in trip_selectors:
                 try:
-                    page.click(f'button:has-text("{btn}")', timeout=3000)
-                    searched = True
-                    print(f"    ✅ Búsqueda iniciada ({btn})")
+                    page.click(sel, timeout=2000)
+                    page.wait_for_timeout(600)
                     break
                 except:
                     continue
-            if not searched:
-                page.keyboard.press("Enter")
-                print("    ✅ Búsqueda iniciada (Enter)")
+            for opt in ["Solo ida", "One way"]:
+                try:
+                    page.click(f"li:has-text('{opt}')", timeout=2000)
+                    page.wait_for_timeout(500)
+                    break
+                except:
+                    continue
 
-            # 6. Esperar resultados
-            page.wait_for_timeout(7000)
+            # 3. Llenar origen (combobox índice 0)
+            if not fill_airport(page, 0, origin):
+                raise Exception(f"No se pudo llenar origen: {origin}")
+
+            # 4. Llenar destino (combobox índice 1)
+            if not fill_airport(page, 1, destination):
+                raise Exception(f"No se pudo llenar destino: {destination}")
+
+            # 5. Fecha — combobox índice 2 es usualmente la fecha de salida
             try:
-                page.wait_for_selector('li[data-resultid], [role="listitem"]', timeout=15000)
-                print("    ✅ Resultados cargados")
+                page.get_by_role("combobox").nth(2).click(timeout=3000)
             except:
-                print("    ⏳ Timeout esperando resultados, extrayendo lo que hay...")
-                page.wait_for_timeout(5000)
+                try:
+                    page.get_by_role("textbox").filter(has_text="").first.click(timeout=3000)
+                except:
+                    pass
+            page.wait_for_timeout(1000)
 
-            # 6b. Seleccionar pestaña "Más económicos"
+            # Navegar hasta junio 2026 en el calendario
+            for _ in range(14):  # max 14 meses
+                try:
+                    header = page.locator("h2").filter(has_text="2026").inner_text(timeout=1000)
+                    if "jun" in header.lower():
+                        break
+                    page.click("button[aria-label*='siguiente'], button[aria-label*='Next']", timeout=2000)
+                    page.wait_for_timeout(400)
+                except:
+                    break
+
+            # Clic en el día exacto
+            day = str(int(dep_date.split("-")[2]))  # "08" → "8"
             try:
-                page.get_by_role("tab", name=re.compile("más económicos", re.IGNORECASE)).click(timeout=5000)
-                page.wait_for_timeout(3000)
-                print("    ✅ Pestaña 'Más económicos' seleccionada")
-            except Exception as e:
-                print(f"    ⚠️  Pestaña más económicos: {e}")
+                page.click(f"[data-iso='{dep_date}']", timeout=3000)
+            except:
+                try:
+                    page.click(f"td[aria-label*='{day}'][aria-label*='junio']", timeout=3000)
+                except:
+                    pass
+            page.wait_for_timeout(500)
 
-            # 7. Screenshot
+            # Cerrar calendario
+            for btn in ["Listo", "Done", "Aceptar"]:
+                try:
+                    page.click(f"button:has-text('{btn}')", timeout=2000)
+                    break
+                except:
+                    continue
+            page.wait_for_timeout(800)
+
+            # 6. Buscar
+            for btn in ["Buscar", "Search"]:
+                try:
+                    page.click(f"button:has-text('{btn}')", timeout=3000)
+                    break
+                except:
+                    continue
+            page.wait_for_timeout(7000)  # esperar resultados
+
+            # 7. Screenshot de resultados para verificar
             page.screenshot(path=f"result_{origin}_{destination}.png")
 
             # 8. Extraer precios COP
             cops = extract_cop_prices(page)
 
-            # Fallback USD→COP
+            # Fallback: si sigue en USD, convertir con tasa real
             if not cops:
                 body = page.inner_text("body")
                 usd_vals = []
@@ -283,19 +227,23 @@ def get_cheapest_price(origin, destination, dep_date):
     return price, details
 
 # ============================================================
-# 📲 WHATSAPP (CallMeBot)
+# 📲 TELEGRAM
 # ============================================================
 
-def send_whatsapp(message):
+def send_telegram(message):
     try:
-        r = requests.get(
-            "https://api.callmebot.com/whatsapp.php",
-            params={"phone": WHATSAPP_NUMBER, "text": message, "apikey": CALLMEBOT_APIKEY},
+        r = requests.post(
+            f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage",
+            json={
+                "chat_id":    TELEGRAM_CHAT_ID,
+                "text":       message,
+                "parse_mode": "Markdown",  # soporta *negrita* y _cursiva_
+            },
             timeout=10,
         )
         return r.status_code == 200
     except Exception as e:
-        print(f"    ⚠️  WhatsApp error: {e}")
+        print(f"    ⚠️  Telegram error: {e}")
         return False
 
 # ============================================================
@@ -338,12 +286,6 @@ def check_prices():
 
         if price is None:
             print("sin resultados.")
-            send_whatsapp(
-                f"⚠️ *Sin resultados*\n"
-                f"✈️ {route['label']}\n"
-                f"📅 Vuelo: {route['date']}\n"
-                f"No se encontraron precios en esta consulta."
-            )
             continue
 
         prev      = records.get(key, {}).get("price")
@@ -351,8 +293,7 @@ def check_prices():
         fmt_prev  = f"$ {prev:,.0f} COP" if prev else "ninguno aún"
         print(f"{fmt_price}  (mínimo anterior: {fmt_prev})")
 
-        is_new_min = prev is None or price < prev
-        if is_new_min:
+        if prev is None or price < prev:
             records[key] = {
                 "price":    price,
                 "details":  details,
@@ -360,29 +301,16 @@ def check_prices():
             }
             save_prices(records)
 
-        if is_new_min:
             msg = (
                 f"🚨 *NUEVO PRECIO MÍNIMO!*\n"
                 f"✈️ {route['label']}\n"
                 f"📅 Vuelo: {route['date']}\n"
-                f"💰 Precio actual: {fmt_price}\n"
-                f"📉 Mínimo histórico anterior: {fmt_prev}\n"
+                f"💰 {fmt_price}\n"
+                f"📉 Anterior mínimo: {fmt_prev}\n"
                 f"🔗 {details['url']}\n"
                 f"👉 ¡Compra antes de que suba!"
             )
-        else:
-            fmt_hist = f"$ {prev:,.0f} COP"
-            msg = (
-                f"✈️ *Consulta de precios*\n"
-                f"✈️ {route['label']}\n"
-                f"📅 Vuelo: {route['date']}\n"
-                f"💰 Precio actual: {fmt_price}\n"
-                f"📉 Mínimo histórico: {fmt_hist}\n"
-                f"🔗 {details['url']}"
-            )
-
-        ok = send_whatsapp(msg)
-        status = "NUEVO MÍNIMO" if is_new_min else "consulta"
-        print(f"     → {'🆕' if is_new_min else '📊'} {status} | WhatsApp: {'✅ enviado' if ok else '⚠️ falló'}")
+            ok = send_telegram(msg)
+            print(f"     → 🆕 NUEVO MÍNIMO | Telegram: {'✅ enviado' if ok else '⚠️ falló'}")
 
 check_prices()

@@ -24,7 +24,7 @@ ROUTES = [
     {"origin": "MDE", "destination": "BOG", "date": "2026-06-15", "label": "Medellín → Bogotá"},
 ]
 
-STOP_DATE   = date(2026, 4, 30)
+STOP_DATE   = date(2026, 5, 30)
 PRICES_FILE = "lowest_prices.json"
 
 # ============================================================

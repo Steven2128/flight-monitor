@@ -15,8 +15,8 @@ from playwright.sync_api import sync_playwright
 # 🔧 CONFIGURACIÓN
 # ============================================================
 
-TELEGRAM_BOT_TOKEN = os.environ["TELEGRAM_BOT_TOKEN"]
-TELEGRAM_CHAT_ID   = os.environ["TELEGRAM_CHAT_ID"]
+TELEGRAM_BOT_TOKEN = "8671255696:AAHYJ4_kUEq_iiUURMPdUF7ujQWlPUi4G3s"
+TELEGRAM_CHAT_ID   = "7528462271"
 
 ROUTES = [
     {"origin": "BOG", "destination": "SMR", "date": "2026-06-08", "label": "Bogotá → Santa Marta"},

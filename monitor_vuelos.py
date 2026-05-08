@@ -20,7 +20,6 @@ TELEGRAM_CHAT_ID   = "7528462271"
 
 ROUTES = [
     {"origin": "BOG", "destination": "SMR", "date": "2026-06-08", "label": "Bogotá → Santa Marta"},
-    {"origin": "SMR", "destination": "MDE", "date": "2026-06-11", "label": "Santa Marta → Medellín"},
     {"origin": "MDE", "destination": "BOG", "date": "2026-06-15", "label": "Medellín → Bogotá"},
 ]
 
@@ -40,42 +39,16 @@ def accept_cookies(page):
         except:
             pass
 
-def get_usd_to_cop():
-    """Tasa de cambio USD→COP en tiempo real."""
-    try:
-        r = requests.get("https://api.frankfurter.app/latest?from=USD&to=COP", timeout=5)
-        rate = r.json()["rates"]["COP"]
-        print(f"    💱 Tasa USD→COP: {rate:,.0f}")
-        return rate
-    except:
-        return 4_200  # fallback
 
-def fill_airport(page, index, code):
-    """Llena el campo de aeropuerto (origen=0, destino=1) por índice de combobox."""
-    try:
-        box = page.get_by_role("combobox").nth(index)
-        box.click(timeout=4000)
-        page.wait_for_timeout(500)
-        box.fill("")           # limpia el campo
-        box.type(code, delay=120)
-        page.wait_for_timeout(2000)
-        page.keyboard.press("ArrowDown")
-        page.wait_for_timeout(400)
-        page.keyboard.press("Enter")
-        page.wait_for_timeout(800)
-        return True
-    except Exception as e:
-        print(f"    ⚠️  fill_airport({index}, {code}): {e}")
-        return False
+PRICE_RE = re.compile(r'COP\s*(\d{1,3}(?:[.,]\d{3})+)', re.IGNORECASE)
 
 def extract_cop_prices(page):
-    """Extrae precios en COP del texto visible."""
+    """Extrae precios en COP del texto visible. Acepta separador . o , de miles."""
     cops = []
     try:
         body = page.inner_text("body")
-        # Formato colombiano: 189.000 / 1.234.567
-        for m in re.findall(r'\b(\d{1,3}(?:\.\d{3})+)\b', body):
-            val = float(m.replace(".", ""))
+        for m in PRICE_RE.findall(body):
+            val = float(m.replace(".", "").replace(",", ""))
             if 80_000 < val < 5_000_000:
                 cops.append(val)
     except:
@@ -83,7 +56,10 @@ def extract_cop_prices(page):
     return cops
 
 def get_cheapest_price(origin, destination, dep_date):
-    usd_to_cop = get_usd_to_cop()
+    """Carga Google Flights con query directa (q=...) — auto-busca la ruta."""
+    from urllib.parse import quote
+    q = quote(f"Flights from {origin} to {destination} on {dep_date} oneway")
+    url = f"https://www.google.com/travel/flights?q={q}&curr=COP&hl=es-419"
 
     with sync_playwright() as pw:
         browser = pw.chromium.launch(
@@ -99,119 +75,27 @@ def get_cheapest_price(origin, destination, dep_date):
             ),
             locale="es-CO",
             timezone_id="America/Bogota",
-            viewport={"width": 1280, "height": 800},
+            viewport={"width": 1366, "height": 900},
             extra_http_headers={"Accept-Language": "es-CO,es;q=0.9"},
         )
         page = ctx.new_page()
         price, details = None, None
 
         try:
-            # 1. Ir a Google Flights con curr=COP
-            page.goto(
-                "https://www.google.com/travel/flights?hl=es-419&curr=COP",
-                wait_until="networkidle", timeout=40000
-            )
-            page.wait_for_timeout(2000)
+            page.goto(url, wait_until="domcontentloaded", timeout=60000)
             accept_cookies(page)
-            page.wait_for_timeout(1000)
+            page.wait_for_timeout(2000)
 
-            # 2. Cambiar a "Solo ida" — clic en el selector de tipo de viaje
-            trip_selectors = [
-                "div[jsname='UjMaPb']",
-                "[aria-label*='viaje'], [aria-label*='trip type']",
-                "div.VfPpkd-TkwUic",
-            ]
-            for sel in trip_selectors:
-                try:
-                    page.click(sel, timeout=2000)
-                    page.wait_for_timeout(600)
-                    break
-                except:
-                    continue
-            for opt in ["Solo ida", "One way"]:
-                try:
-                    page.click(f"li:has-text('{opt}')", timeout=2000)
-                    page.wait_for_timeout(500)
-                    break
-                except:
-                    continue
-
-            # 3. Llenar origen (combobox índice 0)
-            if not fill_airport(page, 0, origin):
-                raise Exception(f"No se pudo llenar origen: {origin}")
-
-            # 4. Llenar destino (combobox índice 1)
-            if not fill_airport(page, 1, destination):
-                raise Exception(f"No se pudo llenar destino: {destination}")
-
-            # 5. Fecha — combobox índice 2 es usualmente la fecha de salida
+            # Esperar resultados
             try:
-                page.get_by_role("combobox").nth(2).click(timeout=3000)
+                page.wait_for_selector('div[role="listitem"], div[role="list"]', timeout=25000)
             except:
-                try:
-                    page.get_by_role("textbox").filter(has_text="").first.click(timeout=3000)
-                except:
-                    pass
-            page.wait_for_timeout(1000)
+                pass
+            page.wait_for_timeout(6000)
 
-            # Navegar hasta junio 2026 en el calendario
-            for _ in range(14):  # max 14 meses
-                try:
-                    header = page.locator("h2").filter(has_text="2026").inner_text(timeout=1000)
-                    if "jun" in header.lower():
-                        break
-                    page.click("button[aria-label*='siguiente'], button[aria-label*='Next']", timeout=2000)
-                    page.wait_for_timeout(400)
-                except:
-                    break
-
-            # Clic en el día exacto
-            day = str(int(dep_date.split("-")[2]))  # "08" → "8"
-            try:
-                page.click(f"[data-iso='{dep_date}']", timeout=3000)
-            except:
-                try:
-                    page.click(f"td[aria-label*='{day}'][aria-label*='junio']", timeout=3000)
-                except:
-                    pass
-            page.wait_for_timeout(500)
-
-            # Cerrar calendario
-            for btn in ["Listo", "Done", "Aceptar"]:
-                try:
-                    page.click(f"button:has-text('{btn}')", timeout=2000)
-                    break
-                except:
-                    continue
-            page.wait_for_timeout(800)
-
-            # 6. Buscar
-            for btn in ["Buscar", "Search"]:
-                try:
-                    page.click(f"button:has-text('{btn}')", timeout=3000)
-                    break
-                except:
-                    continue
-            page.wait_for_timeout(7000)  # esperar resultados
-
-            # 7. Screenshot de resultados para verificar
             page.screenshot(path=f"result_{origin}_{destination}.png")
 
-            # 8. Extraer precios COP
             cops = extract_cop_prices(page)
-
-            # Fallback: si sigue en USD, convertir con tasa real
-            if not cops:
-                body = page.inner_text("body")
-                usd_vals = []
-                for m in re.findall(r'(?<!\d)\$\s*(\d{2,4})(?!\d)', body):
-                    val = float(m)
-                    if 20 < val < 3000:
-                        usd_vals.append(val)
-                if usd_vals:
-                    cops = [v * usd_to_cop for v in usd_vals]
-                    print(f"    💱 Convertido {len(usd_vals)} precios USD→COP")
-
             if cops:
                 price   = min(cops)
                 details = {"source": "Google Flights", "url": page.url}
@@ -265,16 +149,16 @@ def save_prices(data):
 # ============================================================
 
 def check_prices():
-    # Asegura que el archivo siempre existe (evita error en git)
     if not os.path.exists(PRICES_FILE):
         save_prices({})
 
     if date.today() > STOP_DATE:
-        print("✅ Monitoreo terminado (pasó el 30 de abril).")
+        print("✅ Monitoreo terminado (pasó el 30 de mayo).")
         return
 
     print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M')}] Revisando precios...")
     records = load_prices()
+    summary_lines = [f"✈️ *Monitor de vuelos*\n_{datetime.now().strftime('%Y-%m-%d %H:%M')}_\n"]
 
     for route in ROUTES:
         key = f"{route['origin']}-{route['destination']}"
@@ -286,6 +170,7 @@ def check_prices():
 
         if price is None:
             print("sin resultados.")
+            summary_lines.append(f"❓ {route['label']} ({route['date']}) — sin resultados\n")
             continue
 
         prev      = records.get(key, {}).get("price")
@@ -293,24 +178,27 @@ def check_prices():
         fmt_prev  = f"$ {prev:,.0f} COP" if prev else "ninguno aún"
         print(f"{fmt_price}  (mínimo anterior: {fmt_prev})")
 
-        if prev is None or price < prev:
+        is_new_min = prev is None or price < prev
+        if is_new_min:
             records[key] = {
                 "price":    price,
                 "details":  details,
                 "found_at": str(datetime.now()),
             }
             save_prices(records)
+            print(f"     → 🆕 NUEVO MÍNIMO guardado")
 
-            msg = (
-                f"🚨 *NUEVO PRECIO MÍNIMO!*\n"
-                f"✈️ {route['label']}\n"
-                f"📅 Vuelo: {route['date']}\n"
-                f"💰 {fmt_price}\n"
-                f"📉 Anterior mínimo: {fmt_prev}\n"
-                f"🔗 {details['url']}\n"
-                f"👉 ¡Compra antes de que suba!"
-            )
-            ok = send_telegram(msg)
-            print(f"     → 🆕 NUEVO MÍNIMO | Telegram: {'✅ enviado' if ok else '⚠️ falló'}")
+        tag = "🚨 *NUEVO MÍNIMO*" if is_new_min else "📊 Actual"
+        summary_lines.append(
+            f"{tag}\n"
+            f"✈️ {route['label']}\n"
+            f"📅 {route['date']}\n"
+            f"💰 {fmt_price}\n"
+            f"📉 mínimo guardado: {fmt_prev}\n"
+            f"🔗 {details['url']}\n"
+        )
+
+    ok = send_telegram("\n".join(summary_lines))
+    print(f"  Telegram: {'✅ enviado' if ok else '⚠️ falló'}")
 
 check_prices()

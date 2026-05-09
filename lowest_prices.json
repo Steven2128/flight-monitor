@@ -8,11 +8,11 @@
     "found_at": "2026-04-17 15:35:05.698197"
   },
   "MDE-BOG": {
-    "price": 108930.0,
+    "price": 91440.0,
     "details": {
       "source": "Google Flights",
-      "url": "https://www.google.com/travel/flights/search?tfs=CBwQAhoeEgoyMDI2LTA2LTE1agcIARIDTURFcgcIARIDQk9HQAFIAXABggELCP___________wGYAQI&tfu=EgoIABAAGAAgAigB&hl=es-419&curr=COP"
+      "url": "https://www.google.com/travel/flights?q=Flights%20from%20MDE%20to%20BOG%20on%202026-06-15%20oneway&curr=COP&hl=es-419"
     },
-    "found_at": "2026-04-14 19:00:08.140543"
+    "found_at": "2026-05-09 05:01:46.332196"
   }
 }

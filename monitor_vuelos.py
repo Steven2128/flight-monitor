@@ -5,11 +5,14 @@ Diseñado para correr una vez por ejecución (GitHub Actions lo dispara cada 30 
 """
 
 import re
+import sys
 import json
 import requests
 import os
 from datetime import datetime, date
 from playwright.sync_api import sync_playwright
+
+sys.stdout.reconfigure(encoding="utf-8")
 
 # ============================================================
 # 🔧 CONFIGURACIÓN
@@ -19,7 +22,7 @@ TELEGRAM_BOT_TOKEN = "8671255696:AAHYJ4_kUEq_iiUURMPdUF7ujQWlPUi4G3s"
 TELEGRAM_CHAT_ID   = "7528462271"
 
 ROUTES = [
-    {"origin": "BOG", "destination": "SMR", "date": "2026-06-08", "label": "Bogotá → Santa Marta"},
+    {"origin": "BOG", "destination": "SMR", "date": "2026-06-07", "label": "Bogotá → Santa Marta"},
     {"origin": "MDE", "destination": "BOG", "date": "2026-06-15", "label": "Medellín → Bogotá"},
 ]
 
@@ -42,21 +45,23 @@ def accept_cookies(page):
 
 PRICE_RE = re.compile(r'COP\s*(\d{1,3}(?:[.,]\d{3})+)', re.IGNORECASE)
 
-def extract_cop_prices(page):
-    """Extrae precios en COP del texto visible. Acepta separador . o , de miles."""
-    cops = []
+def extract_first_price_from_section(page):
+    """Primer precio COP de 'Todos los vuelos' (ya ordenado por precio)."""
     try:
         body = page.inner_text("body")
-        for m in PRICE_RE.findall(body):
-            val = float(m.replace(".", "").replace(",", ""))
+        idx = body.find("Todos los vuelos")
+        section = body[idx:idx + 2000] if idx >= 0 else body
+        m = PRICE_RE.search(section)
+        if m:
+            val = float(m.group(1).replace(".", "").replace(",", ""))
             if 80_000 < val < 5_000_000:
-                cops.append(val)
+                return val
     except:
         pass
-    return cops
+    return None
 
 def get_cheapest_price(origin, destination, dep_date):
-    """Carga Google Flights con query directa (q=...) — auto-busca la ruta."""
+    """Carga Google Flights: Más económicos → Ordenado por precio → primer precio."""
     from urllib.parse import quote
     q = quote(f"Flights from {origin} to {destination} on {dep_date} oneway")
     url = f"https://www.google.com/travel/flights?q={q}&curr=COP&hl=es-419"
@@ -84,20 +89,44 @@ def get_cheapest_price(origin, destination, dep_date):
         try:
             page.goto(url, wait_until="domcontentloaded", timeout=60000)
             accept_cookies(page)
-            page.wait_for_timeout(2000)
+            page.wait_for_timeout(3000)
 
-            # Esperar resultados
+            # 1. Pestaña "Más económicos"
+            try:
+                page.click('text=Más económicos', timeout=8000)
+                page.wait_for_timeout(4000)
+            except:
+                pass
+
+            # 2. Abrir dropdown de orden
+            try:
+                page.click('text=Ordenado por vuelos principales', timeout=8000)
+                page.wait_for_timeout(2000)
+            except:
+                pass
+
+            # 3. Seleccionar "Precio" en el dropdown (role=menuitemradio evita falsos positivos)
+            try:
+                page.wait_for_selector('[role="menuitemradio"]', timeout=5000)
+                for item in page.locator('[role="menuitemradio"]').all():
+                    if item.inner_text().strip() == 'Precio':
+                        item.click(timeout=3000)
+                        break
+                page.wait_for_timeout(4000)
+            except:
+                pass
+
+            # Esperar resultados ordenados
             try:
                 page.wait_for_selector('div[role="listitem"], div[role="list"]', timeout=25000)
             except:
                 pass
-            page.wait_for_timeout(6000)
+            page.wait_for_timeout(3000)
 
             page.screenshot(path=f"result_{origin}_{destination}.png")
 
-            cops = extract_cop_prices(page)
-            if cops:
-                price   = min(cops)
+            price = extract_first_price_from_section(page)
+            if price:
                 details = {"source": "Google Flights", "url": page.url}
 
         except Exception as e:

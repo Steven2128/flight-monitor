@@ -16,20 +16,20 @@
     "found_at": "2026-05-09 05:01:46.332196"
   },
   "BOG-SMR-2026-06-07": {
-    "price": 212898.0,
+    "price": 212666.0,
     "details": {
       "source": "Google Flights",
       "url": "https://www.google.com/travel/flights?q=Flights%20from%20BOG%20to%20SMR%20on%202026-06-07%20oneway&curr=COP&hl=es-419"
     },
-    "found_at": "2026-08-14 04:15:54.338615"
+    "found_at": "2026-08-14 07:46:49.278396"
   },
   "MDE-BOG-2026-06-15": {
-    "price": 212898.0,
+    "price": 212666.0,
     "details": {
       "source": "Google Flights",
       "url": "https://www.google.com/travel/flights?q=Flights%20from%20MDE%20to%20BOG%20on%202026-06-15%20oneway&curr=COP&hl=es-419"
     },
-    "found_at": "2026-08-14 04:16:28.502806"
+    "found_at": "2026-08-14 07:47:23.491594"
   },
   "BOG-MDE-2026-10-06": {
     "price": 84990.0,

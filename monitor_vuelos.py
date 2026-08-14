@@ -21,12 +21,8 @@ sys.stdout.reconfigure(encoding="utf-8")
 TELEGRAM_BOT_TOKEN = os.environ["TELEGRAM_BOT_TOKEN"]
 TELEGRAM_CHAT_ID   = os.environ["TELEGRAM_CHAT_ID"]
 
-CONFIG_FILE = os.environ.get("CONFIG_FILE", "config.json")
-with open(CONFIG_FILE, encoding="utf-8") as f:
-    _config = json.load(f)
-
-ROUTES      = _config["routes"]
-STOP_DATE   = date.fromisoformat(_config["stop_date"])
+ROUTES      = json.loads(os.environ["ROUTES_JSON"])
+STOP_DATE   = date.fromisoformat(os.environ["STOP_DATE"])
 PRICES_FILE = os.environ.get("PRICES_FILE", "lowest_prices.json")
 
 # ============================================================

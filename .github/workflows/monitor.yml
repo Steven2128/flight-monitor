@@ -49,6 +49,8 @@ jobs:
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID:   ${{ secrets.TELEGRAM_CHAT_ID }}
+          ROUTES_JSON:        ${{ vars.ROUTES_JSON }}
+          STOP_DATE:          ${{ vars.STOP_DATE }}
         run: python monitor_vuelos.py
 
       - name: 💾 Guardar precios mínimos

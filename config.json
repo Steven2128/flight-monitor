@@ -1,0 +1,9 @@
+{
+  "stop_date": "2026-10-13",
+  "routes": [
+    {"origin": "BOG", "destination": "SMR", "date": "2026-06-07", "label": "Bogotá → Santa Marta"},
+    {"origin": "MDE", "destination": "BOG", "date": "2026-06-15", "label": "Medellín → Bogotá"},
+    {"origin": "BOG", "destination": "MDE", "date": "2026-10-06", "label": "Bogotá → Medellín"},
+    {"origin": "MDE", "destination": "BOG", "date": "2026-10-12", "label": "Medellín → Bogotá"}
+  ]
+}

@@ -18,16 +18,16 @@ sys.stdout.reconfigure(encoding="utf-8")
 # 🔧 CONFIGURACIÓN
 # ============================================================
 
-TELEGRAM_BOT_TOKEN = "8671255696:AAHYJ4_kUEq_iiUURMPdUF7ujQWlPUi4G3s"
-TELEGRAM_CHAT_ID   = "7528462271"
+TELEGRAM_BOT_TOKEN = os.environ["TELEGRAM_BOT_TOKEN"]
+TELEGRAM_CHAT_ID   = os.environ["TELEGRAM_CHAT_ID"]
 
-ROUTES = [
-    {"origin": "BOG", "destination": "SMR", "date": "2026-06-07", "label": "Bogotá → Santa Marta"},
-    {"origin": "MDE", "destination": "BOG", "date": "2026-06-15", "label": "Medellín → Bogotá"},
-]
+CONFIG_FILE = os.environ.get("CONFIG_FILE", "config.json")
+with open(CONFIG_FILE, encoding="utf-8") as f:
+    _config = json.load(f)
 
-STOP_DATE   = date(2026, 5, 30)
-PRICES_FILE = "lowest_prices.json"
+ROUTES      = _config["routes"]
+STOP_DATE   = date.fromisoformat(_config["stop_date"])
+PRICES_FILE = os.environ.get("PRICES_FILE", "lowest_prices.json")
 
 # ============================================================
 # ✈️ SCRAPING GOOGLE FLIGHTS
@@ -190,7 +190,7 @@ def check_prices():
     summary_lines = [f"✈️ *Monitor de vuelos*\n_{datetime.now().strftime('%Y-%m-%d %H:%M')}_\n"]
 
     for route in ROUTES:
-        key = f"{route['origin']}-{route['destination']}"
+        key = f"{route['origin']}-{route['destination']}-{route['date']}"
         print(f"  🔍 {route['label']}...", end=" ", flush=True)
 
         price, details = get_cheapest_price(

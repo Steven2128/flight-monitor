@@ -40,9 +40,10 @@ def accept_cookies(page):
 
 
 PRICE_RE = re.compile(r'COP\s*(\d{1,3}(?:[.,]\d{3})+)', re.IGNORECASE)
+TIME_RE  = re.compile(r'\d{1,2}:\d{2}\s?[ap]\.?\s?m\.?', re.IGNORECASE)
 
 def extract_first_price_from_section(page):
-    """Primer precio COP de 'Todos los vuelos' (ya ordenado por precio)."""
+    """Primer precio COP de 'Todos los vuelos' (ya ordenado por precio) + hora salida/llegada."""
     try:
         body = page.inner_text("body")
         idx = body.find("Todos los vuelos")
@@ -51,10 +52,13 @@ def extract_first_price_from_section(page):
         if m:
             val = float(m.group(1).replace(".", "").replace(",", ""))
             if 20_000 < val < 5_000_000:
-                return val
+                times = TIME_RE.findall(section[:m.start()])
+                dep_time = times[-2] if len(times) >= 2 else None
+                arr_time = times[-1] if len(times) >= 1 else None
+                return val, dep_time, arr_time
     except:
         pass
-    return None
+    return None, None, None
 
 def get_cheapest_price(origin, destination, dep_date):
     """Carga Google Flights: Más económicos → Ordenado por precio → primer precio."""
@@ -80,7 +84,7 @@ def get_cheapest_price(origin, destination, dep_date):
             extra_http_headers={"Accept-Language": "es-CO,es;q=0.9"},
         )
         page = ctx.new_page()
-        price, details = None, None
+        price, details, dep_time, arr_time = None, None, None, None
 
         try:
             page.goto(url, wait_until="domcontentloaded", timeout=60000)
@@ -121,9 +125,14 @@ def get_cheapest_price(origin, destination, dep_date):
 
             page.screenshot(path=f"result_{origin}_{destination}.png")
 
-            price = extract_first_price_from_section(page)
+            price, dep_time, arr_time = extract_first_price_from_section(page)
             if price:
-                details = {"source": "Google Flights", "url": page.url}
+                details = {
+                    "source":    "Google Flights",
+                    "url":       page.url,
+                    "dep_time":  dep_time,
+                    "arr_time":  arr_time,
+                }
 
         except Exception as e:
             print(f"    ⚠️  Error: {e}")
@@ -217,10 +226,14 @@ def check_prices():
 
         tag = "🚨 *NUEVO MÍNIMO*" if is_new_min else "📊 Actual"
         safe_url = details['url'].replace("_", "%5F").replace("*", "%2A")
+        dep_time = details.get("dep_time")
+        arr_time = details.get("arr_time")
+        fmt_horario = f"{dep_time} → {arr_time}" if dep_time and arr_time else "no disponible"
         summary_lines.append(
             f"{tag}\n"
             f"✈️ {route['label']}\n"
             f"📅 {route['date']}\n"
+            f"🕐 {fmt_horario}\n"
             f"💰 {fmt_price}\n"
             f"📉 mínimo guardado: {fmt_prev}\n"
             f"🔗 {safe_url}\n"

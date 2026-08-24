@@ -50,7 +50,7 @@ def extract_first_price_from_section(page):
         m = PRICE_RE.search(section)
         if m:
             val = float(m.group(1).replace(".", "").replace(",", ""))
-            if 80_000 < val < 5_000_000:
+            if 20_000 < val < 5_000_000:
                 return val
     except:
         pass

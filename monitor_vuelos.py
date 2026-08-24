@@ -150,6 +150,8 @@ def send_telegram(message):
             },
             timeout=10,
         )
+        if r.status_code != 200:
+            print(f"    ⚠️  Telegram HTTP {r.status_code}: {r.text}")
         return r.status_code == 200
     except Exception as e:
         print(f"    ⚠️  Telegram error: {e}")
@@ -214,13 +216,14 @@ def check_prices():
             print(f"     → 🆕 NUEVO MÍNIMO guardado")
 
         tag = "🚨 *NUEVO MÍNIMO*" if is_new_min else "📊 Actual"
+        safe_url = details['url'].replace("_", "%5F").replace("*", "%2A")
         summary_lines.append(
             f"{tag}\n"
             f"✈️ {route['label']}\n"
             f"📅 {route['date']}\n"
             f"💰 {fmt_price}\n"
             f"📉 mínimo guardado: {fmt_prev}\n"
-            f"🔗 {details['url']}\n"
+            f"🔗 {safe_url}\n"
         )
 
     ok = send_telegram("\n".join(summary_lines))

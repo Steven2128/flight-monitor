@@ -32,12 +32,22 @@
     "found_at": "2026-08-14 09:14:45.437730"
   },
   "BOG-MDE-2026-10-06": {
-    "price": 75820.0,
+    "price": 72730.0,
     "details": {
       "source": "Google Flights",
-      "url": "https://www.google.com/travel/flights/search?tfs=CBwQAhoeEgoyMDI2LTEwLTA2agcIARIDQk9HcgcIARIDTURFQAFIAXABggELCP___________wGYAQI&tfu=EgYIAhAAGAA&hl=es-419&curr=COP"
+      "url": "https://www.google.com/travel/flights/search?tfs=CBwQAhoeEgoyMDI2LTEwLTA2agcIARIDQk9HcgcIARIDTURFQAFIAXABggELCP___________wGYAQI&tfu=EgYIAhAAGAA&hl=es-419&curr=COP",
+      "dep_time": "8:50 a.m.",
+      "arr_time": "9:56 a.m.",
+      "airline": "JetSMART"
     },
-    "found_at": "2026-08-24 09:06:19.550702"
+    "found_at": "2026-08-31 09:38:34.360232",
+    "history": [
+      {
+        "price": 72730.0,
+        "airline": "JetSMART",
+        "found_at": "2026-08-31 09:38:34.360219"
+      }
+    ]
   },
   "MDE-BOG-2026-10-12": {
     "price": 185523.0,

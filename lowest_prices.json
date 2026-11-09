@@ -248,7 +248,7 @@
     ]
   },
   "SAN-BAQ-2026-04-05": {
-    "price": 413719.0,
+    "price": 407277.0,
     "details": {
       "source": "Google Flights",
       "url": "https://www.google.com/travel/flights?q=Flights%20from%20SAN%20to%20BAQ%20on%202026-04-05%20oneway&curr=COP&hl=es-419",
@@ -256,12 +256,17 @@
       "arr_time": null,
       "airline": null
     },
-    "found_at": "2026-11-07 02:00:12.857075",
+    "found_at": "2026-11-08 19:46:24.681528",
     "history": [
       {
         "price": 413719.0,
         "airline": null,
         "found_at": "2026-11-07 02:00:12.857059"
+      },
+      {
+        "price": 407277.0,
+        "airline": null,
+        "found_at": "2026-11-08 19:46:24.681514"
       }
     ]
   }

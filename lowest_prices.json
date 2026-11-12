@@ -99,20 +99,25 @@
     ]
   },
   "BOG-BAQ-2026-12-13": {
-    "price": 178519.0,
+    "price": 153410.0,
     "details": {
       "source": "Google Flights",
       "url": "https://www.google.com/travel/flights/search?tfs=CBwQAhoeEgoyMDI2LTEyLTEzagcIARIDQk9HcgcIARIDQkFRQAFIAXABggELCP___________wGYAQI&tfu=EgYIAhAAGAA&hl=es-419&curr=COP",
-      "dep_time": "3:20 p.m.",
-      "arr_time": "4:59 p.m.",
-      "airline": "Wingo"
+      "dep_time": "5:00 a.m.",
+      "arr_time": "6:35 a.m.",
+      "airline": "LATAM"
     },
-    "found_at": "2026-11-05 10:12:16.630142",
+    "found_at": "2026-11-12 12:56:16.725894",
     "history": [
       {
         "price": 178519.0,
         "airline": "Wingo",
         "found_at": "2026-11-05 10:12:16.630134"
+      },
+      {
+        "price": 153410.0,
+        "airline": "LATAM",
+        "found_at": "2026-11-12 12:56:16.725881"
       }
     ]
   },
@@ -194,20 +199,25 @@
     ]
   },
   "BOG-BAQ-2026-12-18": {
-    "price": 275385.0,
+    "price": 239090.0,
     "details": {
       "source": "Google Flights",
       "url": "https://www.google.com/travel/flights/search?tfs=CBwQAhoeEgoyMDI2LTEyLTE4agcIARIDQk9HcgcIARIDQkFRQAFIAXABggELCP___________wGYAQI&tfu=EgYIAhAAGAA&hl=es-419&curr=COP",
-      "dep_time": "6:00 a.m.",
-      "arr_time": "7:40 a.m.",
-      "airline": "Wingo"
+      "dep_time": "5:00 a.m.",
+      "arr_time": "6:35 a.m.",
+      "airline": "LATAM"
     },
-    "found_at": "2026-11-05 10:16:59.603777",
+    "found_at": "2026-11-12 13:01:01.299717",
     "history": [
       {
         "price": 275385.0,
         "airline": "Wingo",
         "found_at": "2026-11-05 10:16:59.603769"
+      },
+      {
+        "price": 239090.0,
+        "airline": "LATAM",
+        "found_at": "2026-11-12 13:01:01.299708"
       }
     ]
   },

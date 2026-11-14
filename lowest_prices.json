@@ -204,7 +204,7 @@
     ]
   },
   "BOG-BAQ-2026-12-18": {
-    "price": 239090.0,
+    "price": 220050.0,
     "details": {
       "source": "Google Flights",
       "url": "https://www.google.com/travel/flights/search?tfs=CBwQAhoeEgoyMDI2LTEyLTE4agcIARIDQk9HcgcIARIDQkFRQAFIAXABggELCP___________wGYAQI&tfu=EgYIAhAAGAA&hl=es-419&curr=COP",
@@ -212,7 +212,7 @@
       "arr_time": "6:35 a.m.",
       "airline": "LATAM"
     },
-    "found_at": "2026-11-12 13:01:01.299717",
+    "found_at": "2026-11-14 10:43:34.715499",
     "history": [
       {
         "price": 275385.0,
@@ -223,6 +223,11 @@
         "price": 239090.0,
         "airline": "LATAM",
         "found_at": "2026-11-12 13:01:01.299708"
+      },
+      {
+        "price": 220050.0,
+        "airline": "LATAM",
+        "found_at": "2026-11-14 10:43:34.715487"
       }
     ]
   },
@@ -268,7 +273,7 @@
     ]
   },
   "SAN-BAQ-2026-04-05": {
-    "price": 330960.0,
+    "price": 324339.0,
     "details": {
       "source": "Google Flights",
       "url": "https://www.google.com/travel/flights?q=Flights%20from%20SAN%20to%20BAQ%20on%202026-04-05%20oneway&curr=COP&hl=es-419",
@@ -276,7 +281,7 @@
       "arr_time": null,
       "airline": null
     },
-    "found_at": "2026-11-13 20:29:09.359803",
+    "found_at": "2026-11-14 10:46:03.031491",
     "history": [
       {
         "price": 413719.0,
@@ -292,6 +297,11 @@
         "price": 330960.0,
         "airline": null,
         "found_at": "2026-11-13 20:29:09.359791"
+      },
+      {
+        "price": 324339.0,
+        "airline": null,
+        "found_at": "2026-11-14 10:46:03.031482"
       }
     ]
   }

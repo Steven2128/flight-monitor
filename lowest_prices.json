@@ -158,25 +158,30 @@
     ]
   },
   "BOG-BAQ-2026-12-16": {
-    "price": 208150.0,
+    "price": 199110.0,
     "details": {
       "source": "Google Flights",
       "url": "https://www.google.com/travel/flights/search?tfs=CBwQAhoeEgoyMDI2LTEyLTE2agcIARIDQk9HcgcIARIDQkFRQAFIAXABggELCP___________wGYAQI&tfu=EgYIAhAAGAA&hl=es-419&curr=COP",
-      "dep_time": "5:00 a.m.",
-      "arr_time": "6:35 a.m.",
-      "airline": "LATAM"
+      "dep_time": "11:00 a.m.",
+      "arr_time": "12:39 p.m.",
+      "airline": "JetSMART"
     },
-    "found_at": "2026-11-05 10:15:06.573256",
+    "found_at": "2026-11-15 10:23:29.397155",
     "history": [
       {
         "price": 208150.0,
         "airline": "LATAM",
         "found_at": "2026-11-05 10:15:06.573248"
+      },
+      {
+        "price": 199110.0,
+        "airline": "JetSMART",
+        "found_at": "2026-11-15 10:23:29.397140"
       }
     ]
   },
   "BOG-BAQ-2026-12-17": {
-    "price": 199110.0,
+    "price": 172570.0,
     "details": {
       "source": "Google Flights",
       "url": "https://www.google.com/travel/flights/search?tfs=CBwQAhoeEgoyMDI2LTEyLTE3agcIARIDQk9HcgcIARIDQkFRQAFIAXABggELCP___________wGYAQI&tfu=EgYIAhAAGAA&hl=es-419&curr=COP",
@@ -184,7 +189,7 @@
       "arr_time": "9:19 p.m.",
       "airline": "JetSMART"
     },
-    "found_at": "2026-11-13 08:03:28.856293",
+    "found_at": "2026-11-15 10:24:25.913950",
     "history": [
       {
         "price": 265865.0,
@@ -200,6 +205,11 @@
         "price": 199110.0,
         "airline": "JetSMART",
         "found_at": "2026-11-13 08:03:28.856281"
+      },
+      {
+        "price": 172570.0,
+        "airline": "JetSMART",
+        "found_at": "2026-11-15 10:24:25.913940"
       }
     ]
   },

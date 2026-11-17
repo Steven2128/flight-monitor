@@ -140,7 +140,7 @@
     ]
   },
   "BOG-BAQ-2026-12-15": {
-    "price": 177210.0,
+    "price": 153410.0,
     "details": {
       "source": "Google Flights",
       "url": "https://www.google.com/travel/flights/search?tfs=CBwQAhoeEgoyMDI2LTEyLTE1agcIARIDQk9HcgcIARIDQkFRQAFIAXABggELCP___________wGYAQI&tfu=EgYIAhAAGAA&hl=es-419&curr=COP",
@@ -148,12 +148,17 @@
       "arr_time": "6:35 a.m.",
       "airline": "LATAM"
     },
-    "found_at": "2026-11-05 10:14:09.958809",
+    "found_at": "2026-11-17 14:39:48.012609",
     "history": [
       {
         "price": 177210.0,
         "airline": "LATAM",
         "found_at": "2026-11-05 10:14:09.958802"
+      },
+      {
+        "price": 153410.0,
+        "airline": "LATAM",
+        "found_at": "2026-11-17 14:39:48.012596"
       }
     ]
   },

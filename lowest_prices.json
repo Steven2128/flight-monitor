@@ -163,7 +163,7 @@
     ]
   },
   "BOG-BAQ-2026-12-16": {
-    "price": 199110.0,
+    "price": 172570.0,
     "details": {
       "source": "Google Flights",
       "url": "https://www.google.com/travel/flights/search?tfs=CBwQAhoeEgoyMDI2LTEyLTE2agcIARIDQk9HcgcIARIDQkFRQAFIAXABggELCP___________wGYAQI&tfu=EgYIAhAAGAA&hl=es-419&curr=COP",
@@ -171,7 +171,7 @@
       "arr_time": "12:39 p.m.",
       "airline": "JetSMART"
     },
-    "found_at": "2026-11-15 10:23:29.397155",
+    "found_at": "2026-11-18 06:13:55.714401",
     "history": [
       {
         "price": 208150.0,
@@ -182,6 +182,11 @@
         "price": 199110.0,
         "airline": "JetSMART",
         "found_at": "2026-11-15 10:23:29.397140"
+      },
+      {
+        "price": 172570.0,
+        "airline": "JetSMART",
+        "found_at": "2026-11-18 06:13:55.714388"
       }
     ]
   },

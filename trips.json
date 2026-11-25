@@ -27,6 +27,7 @@
       "min_days": 5,
       "max_days": 9,
       "target_per_flight": 100000,
+      "max_per_flight": 120000,
       "min_connection_minutes": 120
     }
   ]

@@ -149,17 +149,18 @@ def leg(prices, route, iso):
     p = prices.get(f"{route}|{iso}")
     return p if p and p.get("price") else None
 
-def best_way(prices, origin, dest, iso, hubs, min_conn):
-    """Directo o con conexión por otra ciudad del grupo el mismo día."""
+def best_way(prices, origin, dest, iso, hubs, min_conn, cap=float("inf")):
+    """Directo o con conexión por otra ciudad del grupo el mismo día.
+    Cada vuelo debe costar <= cap (el tope por vuelo)."""
     options = []
     direct = leg(prices, f"{origin}-{dest}", iso)
-    if direct:
+    if direct and direct["price"] <= cap:
         options.append((direct["price"], [(f"{origin}-{dest}", direct)]))
     for hub in hubs:
         if hub in (origin, dest):
             continue
         a, b = leg(prices, f"{origin}-{hub}", iso), leg(prices, f"{hub}-{dest}", iso)
-        if not (a and b) or a.get("overnight"):
+        if not (a and b) or a.get("overnight") or a["price"] > cap or b["price"] > cap:
             continue
         arr, dep = to_minutes(a.get("arr")), to_minutes(b.get("dep"))
         if arr is None or dep is None or dep - arr < min_conn:
@@ -170,6 +171,7 @@ def best_way(prices, origin, dest, iso, hubs, min_conn):
 def group_combos(gt, prices):
     dest, trav = gt["destination"], gt["travelers"]
     hubs, min_conn = list(trav), gt.get("min_connection_minutes", 120)
+    cap = gt.get("max_per_flight", float("inf"))
     today = date.today()
     days = [d for d in daterange(gt["from"], gt["to"]) if d >= today]
     combos = []
@@ -180,8 +182,8 @@ def group_combos(gt, prices):
                 continue
             total, parts, ok = 0, [], True
             for city, count in trav.items():
-                out = best_way(prices, city, dest, str(d1), hubs, min_conn)
-                ret = best_way(prices, dest, city, str(d2), hubs, min_conn)
+                out = best_way(prices, city, dest, str(d1), hubs, min_conn, cap)
+                ret = best_way(prices, dest, city, str(d2), hubs, min_conn, cap)
                 if not (out and ret):
                     ok = False
                     break
@@ -191,6 +193,22 @@ def group_combos(gt, prices):
                 combos.append({"total": total, "d1": str(d1), "d2": str(d2), "n": n, "parts": parts})
     combos.sort(key=lambda c: c["total"])
     return combos
+
+def cheap_legs(gt, prices, top=6):
+    """Vuelos sueltos dentro del tope, por ruta, para ver qué fechas van saliendo baratas."""
+    cap, dest = gt.get("max_per_flight"), gt["destination"]
+    if not cap:
+        return []
+    lines = [f"✈️ Vuelos sueltos ≤ {fmt_cop(cap)} encontrados:"]
+    for city in gt["travelers"]:
+        for route in (f"{city}-{dest}", f"{dest}-{city}"):
+            found = sorted((v["price"], k.split("|")[1]) for k, v in prices.items()
+                           if k.startswith(route + "|") and v.get("price") and v["price"] <= cap
+                           and gt["from"] <= k.split("|")[1] <= gt["to"])
+            txt = ", ".join(f"{fmt_date(d)} {fmt_cop(p)}" for p, d in sorted(found[:top], key=lambda x: x[1]))
+            lines.append(f"   • {route.replace('-', '→')}: {txt or 'ninguno todavía'}"
+                         + (f" (+{len(found) - top} más)" if len(found) > top else ""))
+    return lines
 
 def meets_target(combo, target):
     return all(l["price"] <= target
@@ -285,18 +303,23 @@ def main():
     summary = []
     for gt in cfg.get("group_trips", []):
         combos = group_combos(gt, prices)
-        if not combos:
-            continue
-        best, prev = combos[0], state["best"].get(gt["label"])
-        sig = f"{best['d1']}>{best['d2']}"
-        if prev is None or best["total"] < prev["total"]:
-            msgs.append(f"🏝️ *Nuevo mejor plan: {gt['label']}*"
-                        + (f" (antes {fmt_cop(prev['total'])})" if prev else "")
-                        + "\n" + describe_combo(1, best, gt))
-        state["best"][gt["label"]] = {"total": best["total"], "plan": sig,
-                                      "at": datetime.now().isoformat(timespec="minutes")}
-        summary.append(f"🏝️ *{gt['label']}* — mejores opciones:")
-        summary += [describe_combo(i + 1, c, gt) for i, c in enumerate(combos[:3])]
+        cap = gt.get("max_per_flight")
+        best_key = f"{gt['label']}|{cap}"
+        cap_txt = f" (cada vuelo ≤ {fmt_cop(cap)})" if cap else ""
+        if combos:
+            best, prev = combos[0], state["best"].get(best_key)
+            if prev is None or best["total"] < prev["total"]:
+                msgs.append(f"🏝️ *Nuevo mejor plan: {gt['label']}*{cap_txt}"
+                            + (f" (antes {fmt_cop(prev['total'])})" if prev else "")
+                            + "\n" + describe_combo(1, best, gt))
+            state["best"][best_key] = {"total": best["total"], "plan": f"{best['d1']}>{best['d2']}",
+                                       "at": datetime.now().isoformat(timespec="minutes")}
+            summary.append(f"🏝️ *{gt['label']}* — mejores planes{cap_txt}:")
+            summary += [describe_combo(i + 1, c, gt) for i, c in enumerate(combos[:3])]
+        else:
+            summary.append(f"🏝️ *{gt['label']}*: aún no hay fechas donde los 4 vuelen{cap_txt}. "
+                           f"Sigo buscando.")
+        summary += cheap_legs(gt, prices)
 
     now = datetime.now()
     send_summary = (now.hour >= SUMMARY_HOUR and state.get("last_summary") != str(now.date())) \

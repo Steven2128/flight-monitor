@@ -12,8 +12,8 @@
     {
       "label": "San Andrés (vuelos y conexiones)",
       "routes": ["BOG-ADZ", "BAQ-ADZ", "ADZ-BOG", "ADZ-BAQ", "BOG-BAQ", "BAQ-BOG"],
-      "from": "2027-04-01",
-      "to": "2027-05-31"
+      "from": "2027-03-01",
+      "to": "2027-06-30"
     }
   ],
 
@@ -22,8 +22,8 @@
       "label": "San Andrés en familia",
       "destination": "ADZ",
       "travelers": {"BOG": 1, "BAQ": 3},
-      "from": "2027-04-01",
-      "to": "2027-05-31",
+      "from": "2027-03-01",
+      "to": "2027-06-30",
       "min_days": 5,
       "max_days": 9,
       "target_per_flight": 100000,

@@ -59,6 +59,7 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID:   ${{ secrets.TELEGRAM_CHAT_ID }}
           FORCE_SUMMARY:      ${{ inputs.force_summary && '1' || '0' }}
+          QUERIES_PER_RUN:    30
         run: python planificador.py
 
       - name: 💾 Guardar precios del planificador

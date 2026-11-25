@@ -1,0 +1,33 @@
+{
+  "_ayuda": "Criterios del planificador. 'scans' = qué rutas/fechas revisa el bot (rota por todas, unas 24 consultas por hora). 'alert_below' = avisa por Telegram si un vuelo queda en ese precio o menos. 'group_trips' = viajes en grupo: arma la combinación ida+vuelta más barata para todos.",
+
+  "scans": [
+    {
+      "label": "Regreso Barranquilla → Bogotá",
+      "routes": ["BAQ-BOG"],
+      "from": "2027-01-04",
+      "to": "2027-02-28",
+      "alert_below": 115000
+    },
+    {
+      "label": "San Andrés (vuelos y conexiones)",
+      "routes": ["BOG-ADZ", "BAQ-ADZ", "ADZ-BOG", "ADZ-BAQ", "BOG-BAQ", "BAQ-BOG"],
+      "from": "2027-04-01",
+      "to": "2027-05-31"
+    }
+  ],
+
+  "group_trips": [
+    {
+      "label": "San Andrés en familia",
+      "destination": "ADZ",
+      "travelers": {"BOG": 1, "BAQ": 3},
+      "from": "2027-04-01",
+      "to": "2027-05-31",
+      "min_days": 5,
+      "max_days": 9,
+      "target_per_flight": 100000,
+      "min_connection_minutes": 120
+    }
+  ]
+}

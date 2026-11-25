@@ -21,8 +21,8 @@ sys.stdout.reconfigure(encoding="utf-8")
 TELEGRAM_BOT_TOKEN = os.environ["TELEGRAM_BOT_TOKEN"]
 TELEGRAM_CHAT_ID   = os.environ["TELEGRAM_CHAT_ID"]
 
-ROUTES      = json.loads(os.environ["ROUTES_JSON"])
-STOP_DATE   = date.fromisoformat(os.environ["STOP_DATE"])
+ROUTES      = json.loads(os.environ.get("ROUTES_JSON", "[]"))
+STOP_DATE   = date.fromisoformat(os.environ.get("STOP_DATE", "2099-12-31"))
 PRICES_FILE = os.environ.get("PRICES_FILE", "lowest_prices.json")
 
 # ============================================================
@@ -312,4 +312,5 @@ def check_prices():
     ok = send_telegram("\n".join(summary_lines))
     print(f"  Telegram: {'✅ enviado' if ok else '⚠️ falló'}")
 
-check_prices()
+if __name__ == "__main__":
+    check_prices()

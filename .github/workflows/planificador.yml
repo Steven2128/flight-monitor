@@ -1,0 +1,80 @@
+name: 🧳 Planificador de viajes
+
+on:
+  schedule:
+    - cron: '30 * * * *'
+  workflow_dispatch:
+    inputs:
+      force_summary:
+        description: 'Enviar el resumen a Telegram ya'
+        type: boolean
+        default: false
+
+jobs:
+  plan-trips:
+    timeout-minutes: 55
+    concurrency: planificador
+    runs-on: ubuntu-22.04
+    env:
+      TZ: America/Bogota
+
+    steps:
+      - name: 📥 Checkout repo
+        uses: actions/checkout@v4
+
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # ── Caché de paquetes pip ──────────────────────────────
+      - name: 📦 Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: pip-
+
+      # ── Caché de Chromium (el más pesado, ~300 MB) ─────────
+      - name: 🌐 Cache Playwright browsers
+        id: cache-pw
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-chromium-1.50.0
+
+      - name: 📦 Instalar dependencias
+        run: pip install -r requirements.txt
+
+      - name: 🌐 Instalar Chromium (solo si no está en caché)
+        if: steps.cache-pw.outputs.cache-hit != 'true'
+        run: |
+          playwright install chromium
+          # libasound2 es virtual en Ubuntu 22.04 reciente; instalar el proveedor real primero
+          sudo apt-get install -y libasound2t64 2>/dev/null || true
+          playwright install-deps chromium
+
+      - name: 🧳 Planificar viajes
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID:   ${{ secrets.TELEGRAM_CHAT_ID }}
+          FORCE_SUMMARY:      ${{ inputs.force_summary && '1' || '0' }}
+        run: python planificador.py
+
+      - name: 💾 Guardar precios del planificador
+        run: |
+          git config user.name "Flight Monitor Bot"
+          git config user.email "bot@github.com"
+          git add trip_prices.json || true
+          git diff --staged --quiet || git commit -m "chore: update trip prices [skip ci]"
+          git pull --rebase || true
+          git push || true
+
+      - name: 📸 Subir screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: plan-screenshots-${{ github.run_number }}
+          path: "*.png"
+          if-no-files-found: ignore
+          retention-days: 2

@@ -222,15 +222,20 @@ def check_prices():
         save_prices({})
 
     if date.today() > STOP_DATE:
-        print("✅ Monitoreo terminado (pasó el 30 de mayo).")
+        print("✅ Monitoreo terminado (pasó STOP_DATE).")
         return
 
     print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M')}] Revisando precios...")
     records = load_prices()
     summary_lines = [f"✈️ *Monitor de vuelos*\n_{datetime.now().strftime('%Y-%m-%d %H:%M')}_\n"]
 
+    target_hits = []
+
     for route in ROUTES:
         key = f"{route['origin']}-{route['destination']}-{route['date']}"
+        if date.fromisoformat(route["date"]) < date.today():
+            print(f"  ⏭️  {route['label']} ({route['date']}) ya pasó, se omite.")
+            continue
         print(f"  🔍 {route['label']}...", end=" ", flush=True)
 
         price, details = get_cheapest_price(
@@ -264,7 +269,17 @@ def check_prices():
             save_prices(records)
             print(f"     → 🆕 NUEVO MÍNIMO guardado")
 
-        tag = "🚨 *NUEVO MÍNIMO*" if is_new_min else "📊 Actual"
+        alert_below = route.get("alert_below")
+        hit_target  = alert_below is not None and price <= alert_below
+        if hit_target:
+            target_hits.append(f"{route['label']} {route['date']}: {fmt_price}")
+
+        if hit_target:
+            tag = f"🎯 *PRECIO OBJETIVO* (≤ $ {alert_below:,.0f})"
+        elif is_new_min:
+            tag = "🚨 *NUEVO MÍNIMO*"
+        else:
+            tag = "📊 Actual"
         safe_url = details['url'].replace("_", "%5F").replace("*", "%2A")
         dep_time = details.get("dep_time")
         arr_time = details.get("arr_time")
@@ -290,6 +305,9 @@ def check_prices():
             f"{hist_lines}"
             f"🔗 {safe_url}\n"
         )
+
+    if target_hits:
+        summary_lines.insert(1, "🎯🎯 *¡VUELO EN TU PRECIO OBJETIVO!* 🎯🎯\n" + "\n".join(target_hits) + "\n")
 
     ok = send_telegram("\n".join(summary_lines))
     print(f"  Telegram: {'✅ enviado' if ok else '⚠️ falló'}")

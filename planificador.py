@@ -126,7 +126,9 @@ def run_scan(cfg, state):
     print(f"🔍 Consultando {len(batch)} de {len(keys)} rutas/fechas...")
     now = datetime.now().isoformat(timespec="minutes")
     with ThreadPoolExecutor(WORKERS) as ex:
-        for key, price, det in ex.map(scrape, batch):
+        for i, (key, price, det) in enumerate(ex.map(scrape, batch), 1):
+            if i % 10 == 0:
+                save_state(state)  # progreso parcial por si la corrida se corta
             rec = prices.setdefault(key, {})
             rec["last_attempt"] = now
             if price:

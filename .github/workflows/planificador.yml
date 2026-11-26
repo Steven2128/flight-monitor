@@ -12,7 +12,7 @@ on:
 
 jobs:
   plan-trips:
-    timeout-minutes: 55
+    timeout-minutes: 150
     concurrency: planificador
     runs-on: ubuntu-22.04
     env:
@@ -59,7 +59,8 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID:   ${{ secrets.TELEGRAM_CHAT_ID }}
           FORCE_SUMMARY:      ${{ inputs.force_summary && '1' || '0' }}
-          QUERIES_PER_RUN:    30
+          QUERIES_PER_RUN:    150
+          WORKERS:            3
         run: python planificador.py
 
       - name: 💾 Guardar precios del planificador

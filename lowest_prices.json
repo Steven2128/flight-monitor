@@ -329,5 +329,204 @@
         "found_at": "2026-11-14 10:46:03.031482"
       }
     ]
+  },
+  "_alerts": {},
+  "BOG-BAQ-2026-12-21": {
+    "price": 322985.0,
+    "details": {
+      "source": "Google Flights",
+      "url": "https://www.google.com/travel/flights/search?tfs=CBwQAhoeEgoyMDI2LTEyLTIxagcIARIDQk9HcgcIARIDQkFRQAFIAXABggELCP___________wGYAQI&tfu=EgYIAhAAGAA&hl=es-419&curr=COP",
+      "dep_time": "6:00 a.m.",
+      "arr_time": "7:39 a.m.",
+      "airline": "Wingo"
+    },
+    "found_at": "2026-11-25 19:36:52.143050",
+    "history": [
+      {
+        "price": 322985.0,
+        "airline": "Wingo",
+        "found_at": "2026-11-25 19:36:52.143050"
+      }
+    ]
+  },
+  "BOG-BAQ-2026-12-22": {
+    "price": 322985.0,
+    "details": {
+      "source": "Google Flights",
+      "url": "https://www.google.com/travel/flights/search?tfs=CBwQAhoeEgoyMDI2LTEyLTIyagcIARIDQk9HcgcIARIDQkFRQAFIAXABggELCP___________wGYAQI&tfu=EgYIAhAAGAA&hl=es-419&curr=COP",
+      "dep_time": "6:00 a.m.",
+      "arr_time": "7:39 a.m.",
+      "airline": "Wingo"
+    },
+    "found_at": "2026-11-25 19:36:52.143050",
+    "history": [
+      {
+        "price": 322985.0,
+        "airline": "Wingo",
+        "found_at": "2026-11-25 19:36:52.143050"
+      }
+    ]
+  },
+  "BOG-BAQ-2026-12-23": {
+    "price": 460550.0,
+    "details": {
+      "source": "Google Flights",
+      "url": "https://www.google.com/travel/flights/search?tfs=CBwQAhoeEgoyMDI2LTEyLTIzagcIARIDQk9HcgcIARIDQkFRQAFIAXABggELCP___________wGYAQI&tfu=EgYIAhAAGAA&hl=es-419&curr=COP",
+      "dep_time": "9:10 a.m.",
+      "arr_time": "10:45 a.m.",
+      "airline": "LATAM"
+    },
+    "found_at": "2026-11-25 19:36:52.143050",
+    "history": [
+      {
+        "price": 460550.0,
+        "airline": "LATAM",
+        "found_at": "2026-11-25 19:36:52.143050"
+      }
+    ]
+  },
+  "BOG-BAQ-2026-12-24": {
+    "price": 322390.0,
+    "details": {
+      "source": "Google Flights",
+      "url": "https://www.google.com/travel/flights/search?tfs=CBwQAhoeEgoyMDI2LTEyLTI0agcIARIDQk9HcgcIARIDQkFRQAFIAXABggELCP___________wGYAQI&tfu=EgYIAhAAGAA&hl=es-419&curr=COP",
+      "dep_time": "9:20 p.m.",
+      "arr_time": "10:55 p.m.",
+      "airline": "Avianca"
+    },
+    "found_at": "2026-11-25 19:36:52.143050",
+    "history": [
+      {
+        "price": 322390.0,
+        "airline": "Avianca",
+        "found_at": "2026-11-25 19:36:52.143050"
+      }
+    ]
+  },
+  "BOG-BAQ-2026-12-25": {
+    "price": 345240.0,
+    "details": {
+      "source": "Google Flights",
+      "url": "https://www.google.com/travel/flights/search?tfs=CBwQAhoeEgoyMDI2LTEyLTI1agcIARIDQk9HcgcIARIDQkFRQAFIAXABggELCP___________wGYAQI&tfu=EgYIAhAAGAA&hl=es-419&curr=COP",
+      "dep_time": "6:50 a.m.",
+      "arr_time": "3:49 p.m.",
+      "airline": "JetSMART"
+    },
+    "found_at": "2026-11-25 19:36:52.143050",
+    "history": [
+      {
+        "price": 345240.0,
+        "airline": "JetSMART",
+        "found_at": "2026-11-25 19:36:52.143050"
+      }
+    ]
+  },
+  "BOG-BAQ-2026-12-26": {
+    "price": 463410.0,
+    "details": {
+      "source": "Google Flights",
+      "url": "https://www.google.com/travel/flights/search?tfs=CBwQAhoeEgoyMDI2LTEyLTI2agcIARIDQk9HcgcIARIDQkFRQAFIAXABggELCP___________wGYAQI&tfu=EgYIAhAAGAA&hl=es-419&curr=COP",
+      "dep_time": "11:25 a.m.",
+      "arr_time": "1:04 p.m.",
+      "airline": "JetSMART"
+    },
+    "found_at": "2026-11-25 19:36:52.143050",
+    "history": [
+      {
+        "price": 463410.0,
+        "airline": "JetSMART",
+        "found_at": "2026-11-25 19:36:52.143050"
+      }
+    ]
+  },
+  "BOG-BAQ-2026-12-27": {
+    "price": 460430.0,
+    "details": {
+      "source": "Google Flights",
+      "url": "https://www.google.com/travel/flights/search?tfs=CBwQAhoeEgoyMDI2LTEyLTI3agcIARIDQk9HcgcIARIDQkFRQAFIAXABggELCP___________wGYAQI&tfu=EgYIAhAAGAA&hl=es-419&curr=COP",
+      "dep_time": "7:30 p.m.",
+      "arr_time": "9:00 p.m.",
+      "airline": "Avianca"
+    },
+    "found_at": "2026-11-25 19:36:52.143050",
+    "history": [
+      {
+        "price": 460430.0,
+        "airline": "Avianca",
+        "found_at": "2026-11-25 19:36:52.143050"
+      }
+    ]
+  },
+  "BOG-BAQ-2026-12-28": {
+    "price": 463410.0,
+    "details": {
+      "source": "Google Flights",
+      "url": "https://www.google.com/travel/flights/search?tfs=CBwQAhoeEgoyMDI2LTEyLTI4agcIARIDQk9HcgcIARIDQkFRQAFIAXABggELCP___________wGYAQI&tfu=EgYIAhAAGAA&hl=es-419&curr=COP",
+      "dep_time": "8:55 a.m.",
+      "arr_time": "10:34 a.m.",
+      "airline": "JetSMART"
+    },
+    "found_at": "2026-11-25 19:36:52.143050",
+    "history": [
+      {
+        "price": 463410.0,
+        "airline": "JetSMART",
+        "found_at": "2026-11-25 19:36:52.143050"
+      }
+    ]
+  },
+  "BOG-BAQ-2026-12-29": {
+    "price": 555150.0,
+    "details": {
+      "source": "Google Flights",
+      "url": "https://www.google.com/travel/flights/search?tfs=CBwQAhoeEgoyMDI2LTEyLTI5agcIARIDQk9HcgcIARIDQkFRQAFIAXABggELCP___________wGYAQI&tfu=EgYIAhAAGAA&hl=es-419&curr=COP",
+      "dep_time": "10:30 p.m.",
+      "arr_time": "12:05 a.m.",
+      "airline": "+1\nLATAM"
+    },
+    "found_at": "2026-11-25 19:36:52.143050",
+    "history": [
+      {
+        "price": 555150.0,
+        "airline": "+1\nLATAM",
+        "found_at": "2026-11-25 19:36:52.143050"
+      }
+    ]
+  },
+  "BOG-BAQ-2026-12-30": {
+    "price": 586090.0,
+    "details": {
+      "source": "Google Flights",
+      "url": "https://www.google.com/travel/flights/search?tfs=CBwQAhoeEgoyMDI2LTEyLTMwagcIARIDQk9HcgcIARIDQkFRQAFIAXABggELCP___________wGYAQI&tfu=EgYIAhAAGAA&hl=es-419&curr=COP",
+      "dep_time": "12:00 p.m.",
+      "arr_time": "1:35 p.m.",
+      "airline": "LATAM"
+    },
+    "found_at": "2026-11-25 19:36:52.143050",
+    "history": [
+      {
+        "price": 586090.0,
+        "airline": "LATAM",
+        "found_at": "2026-11-25 19:36:52.143050"
+      }
+    ]
+  },
+  "BOG-BAQ-2026-12-31": {
+    "price": 322390.0,
+    "details": {
+      "source": "Google Flights",
+      "url": "https://www.google.com/travel/flights/search?tfs=CBwQAhoeEgoyMDI2LTEyLTMxagcIARIDQk9HcgcIARIDQkFRQAFIAXABggELCP___________wGYAQI&tfu=EgYIAhAAGAA&hl=es-419&curr=COP",
+      "dep_time": "9:20 p.m.",
+      "arr_time": "12:45 a.m.",
+      "airline": "+1\nAvianca"
+    },
+    "found_at": "2026-11-25 19:36:52.143050",
+    "history": [
+      {
+        "price": 322390.0,
+        "airline": "+1\nAvianca",
+        "found_at": "2026-11-25 19:36:52.143050"
+      }
+    ]
   }
 }

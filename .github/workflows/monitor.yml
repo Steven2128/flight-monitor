@@ -58,6 +58,7 @@ jobs:
           STOP_DATE:          ${{ vars.STOP_DATE }}
           NOTIFY_MODE:        changes
           WORKERS:            3
+          WINGO_ALERT_BELOW:  100000
         run: python monitor_vuelos.py
 
       - name: 💾 Guardar precios mínimos

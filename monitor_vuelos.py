@@ -178,6 +178,76 @@ def get_cheapest_price(origin, destination, dep_date, max_attempts=2):
     return None, None
 
 # ============================================================
+# 🟣 WINGO.COM (precio directo de la aerolínea)
+# ============================================================
+
+WINGO_ALERT_BELOW = float(os.environ.get("WINGO_ALERT_BELOW", "100000"))
+
+_MESES_ES = {"ene": 1, "feb": 2, "mar": 3, "abr": 4, "may": 5, "jun": 6,
+             "jul": 7, "ago": 8, "sep": 9, "oct": 10, "nov": 11, "dic": 12}
+WINGO_STRIP_RE = re.compile(
+    r"(?:Lun|Mar|Mié|Jue|Vie|Sáb|Dom)\s+(\d{1,2})\s+([A-Za-z]{3})\s+"
+    r"(?:\$\s*([\d.,]+)\s*COP|Sin Vuelos)", re.IGNORECASE)
+
+def wingo_url(origin, destination, iso):
+    return f"https://booking.wingo.com/es/search/{origin}/{destination}/{iso}/1/0/0/1/COP/0/0"
+
+def parse_wingo_strip(text, center_iso):
+    """Tira de fechas de wingo.com → {iso: precio o None (sin vuelos)}."""
+    c = date.fromisoformat(center_iso)
+    out = {}
+    for day, mon, price in WINGO_STRIP_RE.findall(text):
+        m = _MESES_ES.get(mon.lower())
+        if not m:
+            continue
+        y = c.year + (1 if m - c.month < -6 else -1 if m - c.month > 6 else 0)  # cruce de año
+        iso = date(y, m, int(day)).isoformat()
+        out[iso] = float(price.replace(",", "").replace(".", "")) if price else None
+    return out
+
+def wingo_prices(origin, destination, dates, attempts=2):
+    """Precio más barato por día en wingo.com para las fechas pedidas.
+    Cada carga muestra ~7 días alrededor de la fecha buscada."""
+    wanted = sorted(set(dates))
+    found = {}
+    with sync_playwright() as pw:
+        browser = pw.chromium.launch(headless=True, args=[
+            "--no-sandbox", "--disable-dev-shm-usage",
+            "--disable-blink-features=AutomationControlled"])
+        ctx = browser.new_context(
+            user_agent=("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                        "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"),
+            locale="es-CO", timezone_id="America/Bogota",
+            viewport={"width": 1366, "height": 900})
+        page = ctx.new_page()
+        while True:
+            missing = [d for d in wanted if d not in found]
+            if not missing:
+                break
+            # centrar la búsqueda 3 días después de la primera fecha faltante
+            center = min(date.fromisoformat(missing[0]).toordinal() + 3,
+                         date.fromisoformat(wanted[-1]).toordinal())
+            center = date.fromordinal(center).isoformat()
+            got = {}
+            for _ in range(attempts):
+                try:
+                    page.goto(wingo_url(origin, destination, center),
+                              wait_until="domcontentloaded", timeout=60000)
+                    page.wait_for_selector("text=COP", timeout=30000)
+                    page.wait_for_timeout(4000)
+                    got = parse_wingo_strip(page.inner_text("body"), center)
+                    if got:
+                        break
+                except Exception as e:
+                    print(f"    ⚠️  Wingo {center}: {e}")
+            if missing[0] not in got:
+                # no se pudo leer esa fecha: marcarla para no quedar en bucle
+                got[missing[0]] = "error"
+            found.update(got)
+        browser.close()
+    return {d: found.get(d) for d in wanted}
+
+# ============================================================
 # 📲 TELEGRAM
 # ============================================================
 
@@ -317,6 +387,39 @@ def check_prices():
             "",
         ]))
 
+    # ---- 🟣 Wingo directo: solo avisa si queda en WINGO_ALERT_BELOW o menos ----
+    wingo_compact = []
+    by_pair = {}
+    for route in routes:
+        by_pair.setdefault((route["origin"], route["destination"]), []).append(route["date"])
+    for (o, dst), dates in by_pair.items():
+        try:
+            wp = wingo_prices(o, dst, dates)
+        except Exception as e:
+            print(f"  ⚠️ Wingo {o}-{dst}: {e}")
+            continue
+        parts = []
+        for iso, wprice in wp.items():
+            d = date.fromisoformat(iso)
+            day = f"{DIAS[d.weekday()]} {d.day}/{d.month}"
+            if not isinstance(wprice, float):
+                parts.append(f"{d.day}/{d.month} {'sin vuelos' if wprice is None else '?'}")
+                continue
+            parts.append(f"{d.day}/{d.month} $ {wprice:,.0f}")
+            print(f"  🟣 Wingo.com {o}→{dst} {iso}: $ {wprice:,.0f}")
+            wkey = f"WINGO-{o}-{dst}-{iso}"
+            if wprice <= WINGO_ALERT_BELOW and wprice < alerts.get(wkey, float("inf")):
+                alerts[wkey] = wprice
+                target_hits.append(f"🟣 Wingo.com {o}→{dst} {day}: $ {wprice:,.0f} COP")
+                blocks.append("\n".join([
+                    f"🟣 *WINGO.COM ≤ $ {WINGO_ALERT_BELOW:,.0f}*",
+                    f"✈️ {o}→{dst} — 📅 {day} ({iso})",
+                    f"💰 $ {wprice:,.0f} COP (precio directo en la aerolínea)",
+                    f"🔗 {wingo_url(o, dst, iso).replace('_', '%5F')}",
+                    "",
+                ]))
+        wingo_compact.append(f"🟣 Wingo.com {o}→{dst}: " + " · ".join(parts))
+
     save_prices(records)
 
     if NOTIFY_MODE == "changes" and not blocks:
@@ -327,7 +430,7 @@ def check_prices():
     if target_hits:
         lines.append("🎯🎯 *¡VUELO EN TU PRECIO OBJETIVO!* 🎯🎯\n" + "\n".join(target_hits) + "\n")
     lines += blocks
-    lines.append("📋 *Todas las fechas (precio actual):*\n" + "\n".join(compact))
+    lines.append("📋 *Todas las fechas (precio actual):*\n" + "\n".join(compact + wingo_compact))
 
     ok = send_telegram("\n".join(lines)[:4000])
     print(f"  Telegram: {'✅ enviado' if ok else '⚠️ falló'}")

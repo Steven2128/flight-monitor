@@ -2,11 +2,14 @@ name: ✈️ Flight Price Monitor
 
 on:
   schedule:
-    - cron: '0 * * * *'
+    # cada 30 min en minutos "raros" (GitHub retrasa los de :00)
+    - cron: '7,37 * * * *'
   workflow_dispatch:
 
 jobs:
   check-prices:
+    timeout-minutes: 60
+    concurrency: monitor
     runs-on: ubuntu-22.04
     env:
       TZ: America/Bogota
@@ -53,6 +56,8 @@ jobs:
           TELEGRAM_CHAT_ID:   ${{ secrets.TELEGRAM_CHAT_ID }}
           ROUTES_JSON:        ${{ vars.ROUTES_JSON }}
           STOP_DATE:          ${{ vars.STOP_DATE }}
+          NOTIFY_MODE:        changes
+          WORKERS:            3
         run: python monitor_vuelos.py
 
       - name: 💾 Guardar precios mínimos

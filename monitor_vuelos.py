@@ -217,7 +217,14 @@ def save_prices(data):
 # 🔁 CHEQUEO PRINCIPAL (corre una sola vez)
 # ============================================================
 
+NOTIFY_MODE = os.environ.get("NOTIFY_MODE", "always")   # "changes" = solo si hay novedades
+WORKERS     = int(os.environ.get("WORKERS", "3"))
+
+DIAS = ["lun", "mar", "mié", "jue", "vie", "sáb", "dom"]
+
 def check_prices():
+    from concurrent.futures import ThreadPoolExecutor
+
     if not os.path.exists(PRICES_FILE):
         save_prices({})
 
@@ -225,91 +232,104 @@ def check_prices():
         print("✅ Monitoreo terminado (pasó STOP_DATE).")
         return
 
-    print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M')}] Revisando precios...")
+    now = datetime.now()
+    print(f"[{now.strftime('%Y-%m-%d %H:%M')}] Revisando precios...")
     records = load_prices()
-    summary_lines = [f"✈️ *Monitor de vuelos*\n_{datetime.now().strftime('%Y-%m-%d %H:%M')}_\n"]
+    alerts  = records.setdefault("_alerts", {})
 
-    target_hits = []
-
+    routes = []
     for route in ROUTES:
-        key = f"{route['origin']}-{route['destination']}-{route['date']}"
         if date.fromisoformat(route["date"]) < date.today():
             print(f"  ⏭️  {route['label']} ({route['date']}) ya pasó, se omite.")
-            continue
-        print(f"  🔍 {route['label']}...", end=" ", flush=True)
+        else:
+            routes.append(route)
 
-        price, details = get_cheapest_price(
-            route["origin"], route["destination"], route["date"]
-        )
+    def fetch(route):
+        try:
+            return get_cheapest_price(route["origin"], route["destination"], route["date"])
+        except Exception as e:
+            print(f"  ⚠️ {route['date']}: {e}")
+            return None, None
+
+    with ThreadPoolExecutor(WORKERS) as ex:
+        results = list(ex.map(fetch, routes))
+
+    target_hits, blocks, compact = [], [], []
+
+    for route, (price, details) in zip(routes, results):
+        key = f"{route['origin']}-{route['destination']}-{route['date']}"
+        d   = date.fromisoformat(route["date"])
+        day = f"{DIAS[d.weekday()]} {d.day}/{d.month}"
+        od  = f"{route['origin']}→{route['destination']}"
 
         if price is None:
-            print("sin resultados.")
-            summary_lines.append(f"❓ {route['label']} ({route['date']}) — sin resultados\n")
+            print(f"  🔍 {od} {route['date']}: sin resultados.")
+            compact.append(f"❓ {day} {od}: sin resultados")
             continue
 
         prev    = records.get(key, {}).get("price")
         history = records.get(key, {}).get("history", [])
         fmt_price = f"$ {price:,.0f} COP"
         fmt_prev  = f"$ {prev:,.0f} COP" if prev else "ninguno aún"
-        print(f"{fmt_price}  (mínimo anterior: {fmt_prev})")
+        print(f"  🔍 {od} {route['date']}: {fmt_price}  (mínimo anterior: {fmt_prev})")
 
         is_new_min = prev is None or price < prev
         if is_new_min:
             history = (history + [{
                 "price":    price,
                 "airline":  details.get("airline"),
-                "found_at": str(datetime.now()),
+                "found_at": str(now),
             }])[-5:]
             records[key] = {
                 "price":    price,
                 "details":  details,
-                "found_at": str(datetime.now()),
+                "found_at": str(now),
                 "history":  history,
             }
-            save_prices(records)
-            print(f"     → 🆕 NUEVO MÍNIMO guardado")
+            print("     → 🆕 NUEVO MÍNIMO guardado")
 
         alert_below = route.get("alert_below")
         hit_target  = alert_below is not None and price <= alert_below
-        if hit_target:
-            target_hits.append(f"{route['label']} {route['date']}: {fmt_price}")
+        new_target  = hit_target and price < alerts.get(key, float("inf"))
+        if new_target:
+            alerts[key] = price
 
-        if hit_target:
+        dep_time = details.get("dep_time") or ""
+        arr_time = details.get("arr_time") or ""
+        airline  = " ".join((details.get("airline") or "no disponible").split())
+        mark = "🎯" if hit_target else ("🆕" if is_new_min else "•")
+        compact.append(f"{mark} {day} {od}: $ {price:,.0f} {airline} {dep_time}")
+
+        if not (new_target or is_new_min):
+            continue
+        if new_target:
+            target_hits.append(f"{od} {day}: {fmt_price} ({airline} {dep_time})")
             tag = f"🎯 *PRECIO OBJETIVO* (≤ $ {alert_below:,.0f})"
-        elif is_new_min:
-            tag = "🚨 *NUEVO MÍNIMO*"
         else:
-            tag = "📊 Actual"
-        safe_url = details['url'].replace("_", "%5F").replace("*", "%2A")
-        dep_time = details.get("dep_time")
-        arr_time = details.get("arr_time")
-        airline  = details.get("airline") or "no disponible"
-        fmt_horario = f"{dep_time} → {arr_time}" if dep_time and arr_time else "no disponible"
+            tag = "🚨 *NUEVO MÍNIMO*"
+        safe_url = details["url"].replace("_", "%5F").replace("*", "%2A")
+        blocks.append("\n".join([
+            tag,
+            f"✈️ {od} — 📅 {day} ({route['date']})",
+            f"🕐 {dep_time} → {arr_time} · 🏷️ {airline}",
+            f"💰 {fmt_price} (mínimo antes: {fmt_prev})",
+            f"🔗 {safe_url}",
+            "",
+        ]))
 
-        hist_lines = ""
-        if len(history) > 1:
-            hist_lines = "📉 *Últimos precios bajos:*\n" + "\n".join(
-                f"   • $ {h['price']:,.0f} COP — {h.get('airline') or 'aerolínea no disp.'} "
-                f"({h['found_at'][:16]})"
-                for h in reversed(history[:-1])
-            ) + "\n"
+    save_prices(records)
 
-        summary_lines.append(
-            f"{tag}\n"
-            f"✈️ {route['label']}\n"
-            f"📅 {route['date']}\n"
-            f"🕐 {fmt_horario}\n"
-            f"🏷️ {airline}\n"
-            f"💰 {fmt_price}\n"
-            f"📉 mínimo guardado: {fmt_prev}\n"
-            f"{hist_lines}"
-            f"🔗 {safe_url}\n"
-        )
+    if NOTIFY_MODE == "changes" and not blocks:
+        print("  Sin novedades, no se envía Telegram.")
+        return
 
+    lines = [f"✈️ *Monitor de vuelos*\n_{now.strftime('%Y-%m-%d %H:%M')}_\n"]
     if target_hits:
-        summary_lines.insert(1, "🎯🎯 *¡VUELO EN TU PRECIO OBJETIVO!* 🎯🎯\n" + "\n".join(target_hits) + "\n")
+        lines.append("🎯🎯 *¡VUELO EN TU PRECIO OBJETIVO!* 🎯🎯\n" + "\n".join(target_hits) + "\n")
+    lines += blocks
+    lines.append("📋 *Todas las fechas (precio actual):*\n" + "\n".join(compact))
 
-    ok = send_telegram("\n".join(summary_lines))
+    ok = send_telegram("\n".join(lines)[:4000])
     print(f"  Telegram: {'✅ enviado' if ok else '⚠️ falló'}")
 
 if __name__ == "__main__":

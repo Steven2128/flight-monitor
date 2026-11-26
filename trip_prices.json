@@ -1,6 +1,7 @@
 {
  "alerts": {
   "ADZ-BOG|2027-03-24": 88900.0,
+  "ADZ-BOG|2027-05-07": 88900.0,
   "BAQ-BOG|2027-01-13": 109690.0,
   "BAQ-BOG|2027-01-15": 104100.0,
   "BAQ-BOG|2027-01-20": 104100.0,
@@ -29,6 +30,8 @@
   "BOG-ADZ|2027-03-22": 87400.0,
   "BOG-ADZ|2027-03-26": 87400.0,
   "BOG-ADZ|2027-03-28": 87400.0,
+  "BOG-ADZ|2027-03-29": 98600.0,
+  "BOG-ADZ|2027-04-06": 87400.0,
   "BOG-ADZ|2027-04-25": 87400.0,
   "BOG-ADZ|2027-04-27": 87400.0,
   "BOG-ADZ|2027-05-01": 87400.0,
@@ -40,6 +43,11 @@
    "at": "2026-11-25T16:08",
    "plan": "2027-04-21>2027-04-27",
    "total": 1149800.0
+  },
+  "San Andrés en familia|120000": {
+   "at": "2026-11-25T23:47",
+   "plan": "2027-03-28>2027-04-06",
+   "total": 820200.0
   }
  },
  "last_summary": "2026-11-25",
@@ -296,8 +304,32 @@
    "overnight": false,
    "price": 105200.0
   },
+  "ADZ-BAQ|2027-03-29": {
+   "airline": "Wingo",
+   "arr": "11:05 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "9:36 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 105200.0
+  },
+  "ADZ-BAQ|2027-03-30": {
+   "airline": "Wingo",
+   "arr": "12:10 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "10:41 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 105200.0
+  },
+  "ADZ-BAQ|2027-03-31": {
+   "last_attempt": "2026-11-25T22:42"
+  },
   "ADZ-BAQ|2027-04-01": {
    "last_attempt": "2026-11-25T09:00"
+  },
+  "ADZ-BAQ|2027-04-02": {
+   "last_attempt": "2026-11-25T22:42"
   },
   "ADZ-BAQ|2027-04-03": {
    "airline": "Wingo",
@@ -308,11 +340,38 @@
    "overnight": false,
    "price": 105200.0
   },
+  "ADZ-BAQ|2027-04-04": {
+   "airline": "Wingo",
+   "arr": "11:52 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "10:23 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 105200.0
+  },
   "ADZ-BAQ|2027-04-05": {
    "last_attempt": "2026-11-25T09:00"
   },
+  "ADZ-BAQ|2027-04-06": {
+   "airline": "Wingo",
+   "arr": "12:12 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "10:43 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 105200.0
+  },
   "ADZ-BAQ|2027-04-07": {
    "last_attempt": "2026-11-25T09:00"
+  },
+  "ADZ-BAQ|2027-04-08": {
+   "airline": "Wingo",
+   "arr": "12:12 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "10:43 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 105200.0
   },
   "ADZ-BAQ|2027-04-09": {
    "airline": "Wingo",
@@ -323,6 +382,15 @@
    "overnight": false,
    "price": 178200.0
   },
+  "ADZ-BAQ|2027-04-10": {
+   "airline": "Wingo",
+   "arr": "5:55 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "4:26 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 105200.0
+  },
   "ADZ-BAQ|2027-04-11": {
    "airline": "Wingo",
    "arr": "11:52 a.m.",
@@ -332,8 +400,26 @@
    "overnight": false,
    "price": 105200.0
   },
+  "ADZ-BAQ|2027-04-12": {
+   "airline": "LATAM",
+   "arr": "2:55 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "1:30 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 106400.0
+  },
   "ADZ-BAQ|2027-04-13": {
    "last_attempt": "2026-11-25T09:00"
+  },
+  "ADZ-BAQ|2027-04-14": {
+   "airline": "Wingo",
+   "arr": "11:08 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "9:39 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 105200.0
   },
   "ADZ-BAQ|2027-04-15": {
    "airline": "Wingo",
@@ -344,6 +430,15 @@
    "overnight": false,
    "price": 178200.0
   },
+  "ADZ-BAQ|2027-04-16": {
+   "airline": "Wingo",
+   "arr": "11:52 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "10:23 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 105200.0
+  },
   "ADZ-BAQ|2027-04-17": {
    "airline": "Wingo",
    "arr": "5:55 p.m.",
@@ -353,12 +448,30 @@
    "overnight": false,
    "price": 178200.0
   },
+  "ADZ-BAQ|2027-04-18": {
+   "airline": "Wingo",
+   "arr": "11:52 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "10:23 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 105200.0
+  },
   "ADZ-BAQ|2027-04-19": {
    "airline": "Wingo",
    "arr": "11:08 a.m.",
    "checked": "2026-11-25T09:00",
    "dep": "9:39 a.m.",
    "last_attempt": "2026-11-25T09:00",
+   "overnight": false,
+   "price": 105200.0
+  },
+  "ADZ-BAQ|2027-04-20": {
+   "airline": "Wingo",
+   "arr": "12:12 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "10:43 a.m.",
+   "last_attempt": "2026-11-25T22:42",
    "overnight": false,
    "price": 105200.0
   },
@@ -371,6 +484,15 @@
    "overnight": false,
    "price": 163800.0
   },
+  "ADZ-BAQ|2027-04-22": {
+   "airline": "Wingo",
+   "arr": "12:12 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "10:43 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 105200.0
+  },
   "ADZ-BAQ|2027-04-23": {
    "airline": "LATAM",
    "arr": "2:55 p.m.",
@@ -379,6 +501,15 @@
    "last_attempt": "2026-11-25T09:00",
    "overnight": false,
    "price": 163800.0
+  },
+  "ADZ-BAQ|2027-04-24": {
+   "airline": "Wingo",
+   "arr": "5:55 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "4:26 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 105200.0
   },
   "ADZ-BAQ|2027-04-25": {
    "airline": "Wingo",
@@ -389,12 +520,24 @@
    "overnight": false,
    "price": 105200.0
   },
+  "ADZ-BAQ|2027-04-26": {
+   "last_attempt": "2026-11-25T22:42"
+  },
   "ADZ-BAQ|2027-04-27": {
    "airline": "Wingo",
    "arr": "12:12 p.m.",
    "checked": "2026-11-25T09:00",
    "dep": "10:43 a.m.",
    "last_attempt": "2026-11-25T09:00",
+   "overnight": false,
+   "price": 105200.0
+  },
+  "ADZ-BAQ|2027-04-28": {
+   "airline": "Wingo",
+   "arr": "11:08 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "9:39 a.m.",
+   "last_attempt": "2026-11-25T22:42",
    "overnight": false,
    "price": 105200.0
   },
@@ -407,12 +550,30 @@
    "overnight": false,
    "price": 105200.0
   },
+  "ADZ-BAQ|2027-04-30": {
+   "airline": "Wingo",
+   "arr": "11:52 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "10:23 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 105200.0
+  },
   "ADZ-BAQ|2027-05-01": {
    "airline": "Wingo",
    "arr": "5:55 p.m.",
    "checked": "2026-11-25T09:00",
    "dep": "4:26 p.m.",
    "last_attempt": "2026-11-25T09:00",
+   "overnight": false,
+   "price": 178200.0
+  },
+  "ADZ-BAQ|2027-05-02": {
+   "airline": "Wingo",
+   "arr": "11:52 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "10:23 a.m.",
+   "last_attempt": "2026-11-25T22:42",
    "overnight": false,
    "price": 178200.0
   },
@@ -424,6 +585,60 @@
    "last_attempt": "2026-11-25T09:00",
    "overnight": false,
    "price": 163800.0
+  },
+  "ADZ-BAQ|2027-05-04": {
+   "airline": "Wingo",
+   "arr": "12:12 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "10:43 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 178200.0
+  },
+  "ADZ-BAQ|2027-05-05": {
+   "airline": "LATAM",
+   "arr": "2:55 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "1:30 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 163800.0
+  },
+  "ADZ-BAQ|2027-05-06": {
+   "airline": "Wingo",
+   "arr": "12:12 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "10:43 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 178200.0
+  },
+  "ADZ-BAQ|2027-05-07": {
+   "airline": "LATAM",
+   "arr": "2:55 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "1:30 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 163800.0
+  },
+  "ADZ-BAQ|2027-05-08": {
+   "airline": "Wingo",
+   "arr": "5:55 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "4:26 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 178200.0
+  },
+  "ADZ-BAQ|2027-05-09": {
+   "airline": "Wingo",
+   "arr": "11:52 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "10:23 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 178200.0
   },
   "ADZ-BOG|2027-03-01": {
    "airline": "JetSMART",
@@ -677,8 +892,32 @@
    "overnight": false,
    "price": 476900.0
   },
+  "ADZ-BOG|2027-03-29": {
+   "airline": "LATAM",
+   "arr": "3:40 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "11:10 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 376400.0
+  },
+  "ADZ-BOG|2027-03-30": {
+   "last_attempt": "2026-11-25T22:42"
+  },
+  "ADZ-BOG|2027-03-31": {
+   "airline": "LATAM",
+   "arr": "8:55 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "6:50 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 100100.0
+  },
   "ADZ-BOG|2027-04-01": {
    "last_attempt": "2026-11-25T09:00"
+  },
+  "ADZ-BOG|2027-04-02": {
+   "last_attempt": "2026-11-25T22:42"
   },
   "ADZ-BOG|2027-04-03": {
    "airline": "LATAM",
@@ -689,6 +928,9 @@
    "overnight": false,
    "price": 244200.0
   },
+  "ADZ-BOG|2027-04-04": {
+   "last_attempt": "2026-11-25T22:42"
+  },
   "ADZ-BOG|2027-04-05": {
    "airline": "LATAM",
    "arr": "9:40 a.m.",
@@ -698,11 +940,38 @@
    "overnight": false,
    "price": 244200.0
   },
+  "ADZ-BOG|2027-04-06": {
+   "airline": "LATAM",
+   "arr": "9:40 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "7:35 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 101600.0
+  },
   "ADZ-BOG|2027-04-07": {
    "last_attempt": "2026-11-25T09:00"
   },
+  "ADZ-BOG|2027-04-08": {
+   "airline": "LATAM",
+   "arr": "10:40 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "8:35 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 244200.0
+  },
   "ADZ-BOG|2027-04-09": {
    "last_attempt": "2026-11-25T09:00"
+  },
+  "ADZ-BOG|2027-04-10": {
+   "airline": "LATAM",
+   "arr": "9:40 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "7:35 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 244200.0
   },
   "ADZ-BOG|2027-04-11": {
    "airline": "LATAM",
@@ -713,11 +982,38 @@
    "overnight": false,
    "price": 271800.0
   },
+  "ADZ-BOG|2027-04-12": {
+   "airline": "LATAM",
+   "arr": "11:55 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "9:50 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 244200.0
+  },
   "ADZ-BOG|2027-04-13": {
    "last_attempt": "2026-11-25T09:00"
   },
+  "ADZ-BOG|2027-04-14": {
+   "airline": "LATAM",
+   "arr": "11:55 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "9:50 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 244200.0
+  },
   "ADZ-BOG|2027-04-15": {
    "last_attempt": "2026-11-25T09:00"
+  },
+  "ADZ-BOG|2027-04-16": {
+   "airline": "LATAM",
+   "arr": "11:55 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "9:50 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 100100.0
   },
   "ADZ-BOG|2027-04-17": {
    "airline": "LATAM",
@@ -728,11 +1024,32 @@
    "overnight": false,
    "price": 244200.0
   },
+  "ADZ-BOG|2027-04-18": {
+   "last_attempt": "2026-11-25T22:42"
+  },
   "ADZ-BOG|2027-04-19": {
    "last_attempt": "2026-11-25T09:00"
   },
+  "ADZ-BOG|2027-04-20": {
+   "airline": "LATAM",
+   "arr": "9:40 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "7:35 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 244200.0
+  },
   "ADZ-BOG|2027-04-21": {
    "last_attempt": "2026-11-25T09:00"
+  },
+  "ADZ-BOG|2027-04-22": {
+   "airline": "LATAM",
+   "arr": "9:40 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "7:35 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 244200.0
   },
   "ADZ-BOG|2027-04-23": {
    "airline": "LATAM",
@@ -743,6 +1060,15 @@
    "overnight": false,
    "price": 274200.0
   },
+  "ADZ-BOG|2027-04-24": {
+   "airline": "LATAM",
+   "arr": "12:35 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "10:30 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 244200.0
+  },
   "ADZ-BOG|2027-04-25": {
    "airline": "LATAM",
    "arr": "9:40 a.m.",
@@ -752,12 +1078,30 @@
    "overnight": false,
    "price": 244200.0
   },
+  "ADZ-BOG|2027-04-26": {
+   "airline": "JetSMART",
+   "arr": "1:30 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "11:15 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 411200.0
+  },
   "ADZ-BOG|2027-04-27": {
    "airline": "LATAM",
    "arr": "9:40 a.m.",
    "checked": "2026-11-25T09:00",
    "dep": "7:35 a.m.",
    "last_attempt": "2026-11-25T09:00",
+   "overnight": false,
+   "price": 100100.0
+  },
+  "ADZ-BOG|2027-04-28": {
+   "airline": "LATAM",
+   "arr": "9:40 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "7:35 a.m.",
+   "last_attempt": "2026-11-25T22:42",
    "overnight": false,
    "price": 100100.0
   },
@@ -770,6 +1114,15 @@
    "overnight": false,
    "price": 244200.0
   },
+  "ADZ-BOG|2027-04-30": {
+   "airline": "LATAM",
+   "arr": "11:55 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "9:50 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 244200.0
+  },
   "ADZ-BOG|2027-05-01": {
    "airline": "LATAM",
    "arr": "12:35 p.m.",
@@ -779,6 +1132,15 @@
    "overnight": false,
    "price": 244200.0
   },
+  "ADZ-BOG|2027-05-02": {
+   "airline": "LATAM",
+   "arr": "9:40 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "7:35 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 287200.0
+  },
   "ADZ-BOG|2027-05-03": {
    "airline": "JetSMART",
    "arr": "11:00 p.m.",
@@ -787,6 +1149,54 @@
    "last_attempt": "2026-11-25T09:00",
    "overnight": false,
    "price": 257600.0
+  },
+  "ADZ-BOG|2027-05-04": {
+   "airline": "JetSMART",
+   "arr": "11:00 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "8:45 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 257600.0
+  },
+  "ADZ-BOG|2027-05-05": {
+   "airline": "JetSMART",
+   "arr": "2:10 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "11:55 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 142400.0
+  },
+  "ADZ-BOG|2027-05-06": {
+   "last_attempt": "2026-11-25T22:42"
+  },
+  "ADZ-BOG|2027-05-07": {
+   "airline": "JetSMART",
+   "arr": "1:10 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "10:55 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 88900.0
+  },
+  "ADZ-BOG|2027-05-08": {
+   "airline": "LATAM",
+   "arr": "12:35 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "10:30 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 244200.0
+  },
+  "ADZ-BOG|2027-05-09": {
+   "airline": "LATAM",
+   "arr": "9:40 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "7:35 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 244200.0
   },
   "BAQ-ADZ|2027-03-01": {
    "airline": "Wingo",
@@ -1040,6 +1450,27 @@
    "overnight": false,
    "price": 105200.0
   },
+  "BAQ-ADZ|2027-03-29": {
+   "airline": "Wingo",
+   "arr": "8:51 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "7:20 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 105200.0
+  },
+  "BAQ-ADZ|2027-03-30": {
+   "airline": "Wingo",
+   "arr": "9:56 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "8:25 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 173700.0
+  },
+  "BAQ-ADZ|2027-03-31": {
+   "last_attempt": "2026-11-25T22:42"
+  },
   "BAQ-ADZ|2027-04-01": {
    "airline": "Wingo",
    "arr": "9:55 a.m.",
@@ -1049,8 +1480,26 @@
    "overnight": false,
    "price": 173700.0
   },
+  "BAQ-ADZ|2027-04-02": {
+   "airline": "Wingo",
+   "arr": "9:35 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "8:04 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 105200.0
+  },
   "BAQ-ADZ|2027-04-03": {
    "last_attempt": "2026-11-25T09:00"
+  },
+  "BAQ-ADZ|2027-04-04": {
+   "airline": "Wingo",
+   "arr": "9:35 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "8:04 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 105200.0
   },
   "BAQ-ADZ|2027-04-05": {
    "airline": "Wingo",
@@ -1061,6 +1510,9 @@
    "overnight": false,
    "price": 173700.0
   },
+  "BAQ-ADZ|2027-04-06": {
+   "last_attempt": "2026-11-25T22:42"
+  },
   "BAQ-ADZ|2027-04-07": {
    "airline": "Wingo",
    "arr": "8:54 a.m.",
@@ -1069,6 +1521,15 @@
    "last_attempt": "2026-11-25T09:00",
    "overnight": false,
    "price": 173700.0
+  },
+  "BAQ-ADZ|2027-04-08": {
+   "airline": "Wingo",
+   "arr": "9:55 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "8:24 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 105200.0
   },
   "BAQ-ADZ|2027-04-09": {
    "airline": "LATAM",
@@ -1079,14 +1540,50 @@
    "overnight": false,
    "price": 107200.0
   },
+  "BAQ-ADZ|2027-04-10": {
+   "airline": "Wingo",
+   "arr": "3:38 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "2:07 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 105200.0
+  },
   "BAQ-ADZ|2027-04-11": {
    "last_attempt": "2026-11-25T09:00"
+  },
+  "BAQ-ADZ|2027-04-12": {
+   "airline": "Wingo",
+   "arr": "8:54 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "7:23 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 105200.0
   },
   "BAQ-ADZ|2027-04-13": {
    "last_attempt": "2026-11-25T09:00"
   },
+  "BAQ-ADZ|2027-04-14": {
+   "airline": "Wingo",
+   "arr": "8:54 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "7:23 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 105200.0
+  },
   "BAQ-ADZ|2027-04-15": {
    "last_attempt": "2026-11-25T09:00"
+  },
+  "BAQ-ADZ|2027-04-16": {
+   "airline": "LATAM",
+   "arr": "12:45 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "11:15 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 166600.0
   },
   "BAQ-ADZ|2027-04-17": {
    "airline": "Wingo",
@@ -1094,6 +1591,15 @@
    "checked": "2026-11-25T09:00",
    "dep": "2:07 p.m.",
    "last_attempt": "2026-11-25T09:00",
+   "overnight": false,
+   "price": 173700.0
+  },
+  "BAQ-ADZ|2027-04-18": {
+   "airline": "Wingo",
+   "arr": "9:35 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "8:04 a.m.",
+   "last_attempt": "2026-11-25T22:42",
    "overnight": false,
    "price": 173700.0
   },
@@ -1106,6 +1612,15 @@
    "overnight": false,
    "price": 173700.0
   },
+  "BAQ-ADZ|2027-04-20": {
+   "airline": "Wingo",
+   "arr": "9:55 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "8:24 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 173700.0
+  },
   "BAQ-ADZ|2027-04-21": {
    "airline": "LATAM",
    "arr": "12:45 p.m.",
@@ -1114,6 +1629,15 @@
    "last_attempt": "2026-11-25T09:00",
    "overnight": false,
    "price": 163800.0
+  },
+  "BAQ-ADZ|2027-04-22": {
+   "airline": "Wingo",
+   "arr": "9:55 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "8:24 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 105200.0
   },
   "BAQ-ADZ|2027-04-23": {
    "airline": "LATAM",
@@ -1124,6 +1648,15 @@
    "overnight": false,
    "price": 163800.0
   },
+  "BAQ-ADZ|2027-04-24": {
+   "airline": "Wingo",
+   "arr": "3:38 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "2:07 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 105200.0
+  },
   "BAQ-ADZ|2027-04-25": {
    "airline": "Wingo",
    "arr": "9:35 a.m.",
@@ -1132,6 +1665,9 @@
    "last_attempt": "2026-11-25T09:00",
    "overnight": false,
    "price": 173700.0
+  },
+  "BAQ-ADZ|2027-04-26": {
+   "last_attempt": "2026-11-25T22:42"
   },
   "BAQ-ADZ|2027-04-27": {
    "airline": "Wingo",
@@ -1142,6 +1678,15 @@
    "overnight": false,
    "price": 173700.0
   },
+  "BAQ-ADZ|2027-04-28": {
+   "airline": "Wingo",
+   "arr": "8:54 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "7:23 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 105200.0
+  },
   "BAQ-ADZ|2027-04-29": {
    "airline": "Wingo",
    "arr": "9:55 a.m.",
@@ -1151,12 +1696,30 @@
    "overnight": false,
    "price": 173700.0
   },
+  "BAQ-ADZ|2027-04-30": {
+   "airline": "Wingo",
+   "arr": "9:35 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "8:04 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 105200.0
+  },
   "BAQ-ADZ|2027-05-01": {
    "airline": "Wingo",
    "arr": "3:38 p.m.",
    "checked": "2026-11-25T09:00",
    "dep": "2:07 p.m.",
    "last_attempt": "2026-11-25T09:00",
+   "overnight": false,
+   "price": 173700.0
+  },
+  "BAQ-ADZ|2027-05-02": {
+   "airline": "Wingo",
+   "arr": "9:35 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "8:04 a.m.",
+   "last_attempt": "2026-11-25T22:42",
    "overnight": false,
    "price": 173700.0
   },
@@ -1168,6 +1731,54 @@
    "last_attempt": "2026-11-25T09:00",
    "overnight": false,
    "price": 163800.0
+  },
+  "BAQ-ADZ|2027-05-04": {
+   "airline": "Wingo",
+   "arr": "9:55 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "8:24 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 173700.0
+  },
+  "BAQ-ADZ|2027-05-05": {
+   "airline": "LATAM",
+   "arr": "12:45 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "11:15 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 163800.0
+  },
+  "BAQ-ADZ|2027-05-06": {
+   "airline": "Wingo",
+   "arr": "9:55 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "8:24 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 213700.0
+  },
+  "BAQ-ADZ|2027-05-07": {
+   "last_attempt": "2026-11-25T22:42"
+  },
+  "BAQ-ADZ|2027-05-08": {
+   "airline": "Wingo",
+   "arr": "3:38 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "2:07 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 193700.0
+  },
+  "BAQ-ADZ|2027-05-09": {
+   "airline": "JetSMART",
+   "arr": "7:15 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "1:50 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 101300.0
   },
   "BAQ-BOG|2027-01-04": {
    "last_attempt": "2026-11-25T09:00"
@@ -1826,6 +2437,42 @@
    "overnight": false,
    "price": 104100.0
   },
+  "BAQ-BOG|2027-03-28": {
+   "airline": "Wingo",
+   "arr": "11:27 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "9:53 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 117574.0
+  },
+  "BAQ-BOG|2027-03-29": {
+   "airline": "Wingo",
+   "arr": "2:48 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "1:14 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 117574.0
+  },
+  "BAQ-BOG|2027-03-30": {
+   "airline": "Wingo",
+   "arr": "2:25 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "12:51 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 117574.0
+  },
+  "BAQ-BOG|2027-03-31": {
+   "airline": "JetSMART",
+   "arr": "9:50 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "8:13 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 104100.0
+  },
   "BAQ-BOG|2027-04-01": {
    "airline": "JetSMART",
    "arr": "5:53 a.m.",
@@ -1834,6 +2481,15 @@
    "last_attempt": "2026-11-25T09:00",
    "overnight": true,
    "price": 134490.0
+  },
+  "BAQ-BOG|2027-04-02": {
+   "airline": "Wingo",
+   "arr": "2:50 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "1:16 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 201320.0
   },
   "BAQ-BOG|2027-04-03": {
    "airline": "JetSMART",
@@ -1844,6 +2500,15 @@
    "overnight": false,
    "price": 109690.0
   },
+  "BAQ-BOG|2027-04-04": {
+   "airline": "Wingo",
+   "arr": "10:55 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "9:21 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 201320.0
+  },
   "BAQ-BOG|2027-04-05": {
    "airline": "JetSMART",
    "arr": "8:15 p.m.",
@@ -1853,14 +2518,44 @@
    "overnight": false,
    "price": 109690.0
   },
+  "BAQ-BOG|2027-04-06": {
+   "last_attempt": "2026-11-25T22:42"
+  },
   "BAQ-BOG|2027-04-07": {
    "last_attempt": "2026-11-25T09:00"
+  },
+  "BAQ-BOG|2027-04-08": {
+   "airline": "Wingo",
+   "arr": "2:30 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "12:56 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 201320.0
   },
   "BAQ-BOG|2027-04-09": {
    "last_attempt": "2026-11-25T09:00"
   },
+  "BAQ-BOG|2027-04-10": {
+   "airline": "Wingo",
+   "arr": "8:40 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "7:06 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 201320.0
+  },
   "BAQ-BOG|2027-04-11": {
    "last_attempt": "2026-11-25T09:00"
+  },
+  "BAQ-BOG|2027-04-12": {
+   "airline": "JetSMART",
+   "arr": "10:25 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "8:50 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 104100.0
   },
   "BAQ-BOG|2027-04-13": {
    "airline": "Wingo",
@@ -1868,6 +2563,15 @@
    "checked": "2026-11-25T09:00",
    "dep": "12:56 p.m.",
    "last_attempt": "2026-11-25T09:00",
+   "overnight": false,
+   "price": 201320.0
+  },
+  "BAQ-BOG|2027-04-14": {
+   "airline": "Wingo",
+   "arr": "10:50 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "9:16 p.m.",
+   "last_attempt": "2026-11-25T22:42",
    "overnight": false,
    "price": 201320.0
   },
@@ -1880,12 +2584,30 @@
    "overnight": false,
    "price": 201320.0
   },
+  "BAQ-BOG|2027-04-16": {
+   "airline": "Wingo",
+   "arr": "2:50 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "1:16 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 201320.0
+  },
   "BAQ-BOG|2027-04-17": {
    "airline": "Wingo",
    "arr": "8:40 p.m.",
    "checked": "2026-11-25T09:00",
    "dep": "7:06 p.m.",
    "last_attempt": "2026-11-25T09:00",
+   "overnight": false,
+   "price": 201320.0
+  },
+  "BAQ-BOG|2027-04-18": {
+   "airline": "Wingo",
+   "arr": "10:55 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "9:21 p.m.",
+   "last_attempt": "2026-11-25T22:42",
    "overnight": false,
    "price": 201320.0
   },
@@ -1898,8 +2620,26 @@
    "overnight": false,
    "price": 201320.0
   },
+  "BAQ-BOG|2027-04-20": {
+   "airline": "Wingo",
+   "arr": "2:30 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "12:56 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 201320.0
+  },
   "BAQ-BOG|2027-04-21": {
    "last_attempt": "2026-11-25T09:00"
+  },
+  "BAQ-BOG|2027-04-22": {
+   "airline": "Wingo",
+   "arr": "2:30 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "12:56 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 201320.0
   },
   "BAQ-BOG|2027-04-23": {
    "airline": "Wingo",
@@ -1907,6 +2647,15 @@
    "checked": "2026-11-25T09:00",
    "dep": "1:16 p.m.",
    "last_attempt": "2026-11-25T09:00",
+   "overnight": false,
+   "price": 201320.0
+  },
+  "BAQ-BOG|2027-04-24": {
+   "airline": "Wingo",
+   "arr": "8:40 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "7:06 p.m.",
+   "last_attempt": "2026-11-25T22:42",
    "overnight": false,
    "price": 201320.0
   },
@@ -1919,12 +2668,30 @@
    "overnight": false,
    "price": 201320.0
   },
+  "BAQ-BOG|2027-04-26": {
+   "airline": "Wingo",
+   "arr": "2:50 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "1:16 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 201320.0
+  },
   "BAQ-BOG|2027-04-27": {
    "airline": "Wingo",
    "arr": "2:30 p.m.",
    "checked": "2026-11-25T09:00",
    "dep": "12:56 p.m.",
    "last_attempt": "2026-11-25T09:00",
+   "overnight": false,
+   "price": 201320.0
+  },
+  "BAQ-BOG|2027-04-28": {
+   "airline": "Wingo",
+   "arr": "10:50 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "9:16 p.m.",
+   "last_attempt": "2026-11-25T22:42",
    "overnight": false,
    "price": 201320.0
   },
@@ -1937,8 +2704,26 @@
    "overnight": false,
    "price": 201320.0
   },
+  "BAQ-BOG|2027-04-30": {
+   "airline": "JetSMART",
+   "arr": "11:10 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "9:35 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 104100.0
+  },
   "BAQ-BOG|2027-05-01": {
    "last_attempt": "2026-11-25T09:00"
+  },
+  "BAQ-BOG|2027-05-02": {
+   "airline": "JetSMART",
+   "arr": "10:35 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "1:50 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 105050.0
   },
   "BAQ-BOG|2027-05-03": {
    "airline": "Wingo",
@@ -1948,6 +2733,54 @@
    "last_attempt": "2026-11-25T09:00",
    "overnight": false,
    "price": 201320.0
+  },
+  "BAQ-BOG|2027-05-04": {
+   "airline": "Wingo",
+   "arr": "2:30 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "12:56 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 201320.0
+  },
+  "BAQ-BOG|2027-05-05": {
+   "last_attempt": "2026-11-25T22:42"
+  },
+  "BAQ-BOG|2027-05-06": {
+   "airline": "Wingo",
+   "arr": "2:30 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "12:56 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 201320.0
+  },
+  "BAQ-BOG|2027-05-07": {
+   "airline": "Wingo",
+   "arr": "2:50 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "1:16 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 201320.0
+  },
+  "BAQ-BOG|2027-05-08": {
+   "airline": "JetSMART",
+   "arr": "3:00 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "1:25 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 104100.0
+  },
+  "BAQ-BOG|2027-05-09": {
+   "airline": "JetSMART",
+   "arr": "11:25 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "1:50 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 105050.0
   },
   "BOG-ADZ|2027-03-01": {
    "airline": "LATAM",
@@ -2201,8 +3034,38 @@
    "overnight": false,
    "price": 87400.0
   },
+  "BOG-ADZ|2027-03-29": {
+   "airline": "LATAM",
+   "arr": "6:50 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "4:35 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 98600.0
+  },
+  "BOG-ADZ|2027-03-30": {
+   "airline": "JetSMART",
+   "arr": "6:45 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "12:15 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 132000.0
+  },
+  "BOG-ADZ|2027-03-31": {
+   "last_attempt": "2026-11-25T22:42"
+  },
   "BOG-ADZ|2027-04-01": {
    "last_attempt": "2026-11-25T09:00"
+  },
+  "BOG-ADZ|2027-04-02": {
+   "airline": "LATAM",
+   "arr": "7:50 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "5:40 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 285700.0
   },
   "BOG-ADZ|2027-04-03": {
    "airline": "LATAM",
@@ -2213,8 +3076,26 @@
    "overnight": false,
    "price": 242700.0
   },
+  "BOG-ADZ|2027-04-04": {
+   "airline": "LATAM",
+   "arr": "5:55 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "3:40 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 242700.0
+  },
   "BOG-ADZ|2027-04-05": {
    "last_attempt": "2026-11-25T09:00"
+  },
+  "BOG-ADZ|2027-04-06": {
+   "airline": "JetSMART",
+   "arr": "8:03 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "5:50 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 87400.0
   },
   "BOG-ADZ|2027-04-07": {
    "airline": "LATAM",
@@ -2225,14 +3106,50 @@
    "overnight": false,
    "price": 242700.0
   },
+  "BOG-ADZ|2027-04-08": {
+   "airline": "LATAM",
+   "arr": "7:50 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "5:40 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 242700.0
+  },
   "BOG-ADZ|2027-04-09": {
    "last_attempt": "2026-11-25T09:00"
+  },
+  "BOG-ADZ|2027-04-10": {
+   "airline": "LATAM",
+   "arr": "6:50 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "4:35 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 242700.0
   },
   "BOG-ADZ|2027-04-11": {
    "last_attempt": "2026-11-25T09:00"
   },
+  "BOG-ADZ|2027-04-12": {
+   "airline": "LATAM",
+   "arr": "9:05 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "6:50 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 272700.0
+  },
   "BOG-ADZ|2027-04-13": {
    "last_attempt": "2026-11-25T09:00"
+  },
+  "BOG-ADZ|2027-04-14": {
+   "airline": "LATAM",
+   "arr": "1:05 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "10:50 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 272700.0
   },
   "BOG-ADZ|2027-04-15": {
    "airline": "LATAM",
@@ -2243,6 +3160,15 @@
    "overnight": false,
    "price": 242700.0
   },
+  "BOG-ADZ|2027-04-16": {
+   "airline": "LATAM",
+   "arr": "10:10 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "9:25 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 285700.0
+  },
   "BOG-ADZ|2027-04-17": {
    "airline": "LATAM",
    "arr": "9:10 p.m.",
@@ -2251,6 +3177,15 @@
    "last_attempt": "2026-11-25T09:00",
    "overnight": false,
    "price": 242700.0
+  },
+  "BOG-ADZ|2027-04-18": {
+   "airline": "JetSMART",
+   "arr": "8:28 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "6:15 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 140900.0
   },
   "BOG-ADZ|2027-04-19": {
    "airline": "LATAM",
@@ -2261,12 +3196,30 @@
    "overnight": false,
    "price": 242700.0
   },
+  "BOG-ADZ|2027-04-20": {
+   "airline": "JetSMART",
+   "arr": "8:03 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "5:50 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 194400.0
+  },
   "BOG-ADZ|2027-04-21": {
    "airline": "LATAM",
    "arr": "5:55 p.m.",
    "checked": "2026-11-25T09:00",
    "dep": "3:40 p.m.",
    "last_attempt": "2026-11-25T09:00",
+   "overnight": false,
+   "price": 242700.0
+  },
+  "BOG-ADZ|2027-04-22": {
+   "airline": "LATAM",
+   "arr": "6:50 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "4:35 a.m.",
+   "last_attempt": "2026-11-25T22:42",
    "overnight": false,
    "price": 242700.0
   },
@@ -2279,6 +3232,15 @@
    "overnight": false,
    "price": 324700.0
   },
+  "BOG-ADZ|2027-04-24": {
+   "airline": "LATAM",
+   "arr": "9:10 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "7:00 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 242700.0
+  },
   "BOG-ADZ|2027-04-25": {
    "airline": "JetSMART",
    "arr": "8:28 p.m.",
@@ -2287,6 +3249,15 @@
    "last_attempt": "2026-11-25T09:00",
    "overnight": false,
    "price": 87400.0
+  },
+  "BOG-ADZ|2027-04-26": {
+   "airline": "LATAM",
+   "arr": "6:50 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "4:35 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 272700.0
   },
   "BOG-ADZ|2027-04-27": {
    "airline": "JetSMART",
@@ -2297,6 +3268,15 @@
    "overnight": false,
    "price": 87400.0
   },
+  "BOG-ADZ|2027-04-28": {
+   "airline": "LATAM",
+   "arr": "6:50 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "4:35 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 242700.0
+  },
   "BOG-ADZ|2027-04-29": {
    "airline": "LATAM",
    "arr": "9:45 a.m.",
@@ -2305,6 +3285,15 @@
    "last_attempt": "2026-11-25T09:00",
    "overnight": false,
    "price": 272700.0
+  },
+  "BOG-ADZ|2027-04-30": {
+   "airline": "LATAM",
+   "arr": "9:10 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "7:00 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 242700.0
   },
   "BOG-ADZ|2027-05-01": {
    "airline": "JetSMART",
@@ -2315,6 +3304,15 @@
    "overnight": false,
    "price": 87400.0
   },
+  "BOG-ADZ|2027-05-02": {
+   "airline": "JetSMART",
+   "arr": "7:15 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "12:45 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 172100.0
+  },
   "BOG-ADZ|2027-05-03": {
    "airline": "JetSMART",
    "arr": "8:03 p.m.",
@@ -2324,6 +3322,15 @@
    "overnight": false,
    "price": 87400.0
   },
+  "BOG-ADZ|2027-05-04": {
+   "airline": "JetSMART",
+   "arr": "8:03 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "5:50 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 194400.0
+  },
   "BOG-ADZ|2027-05-05": {
    "airline": "LATAM",
    "arr": "5:55 p.m.",
@@ -2332,6 +3339,30 @@
    "last_attempt": "2026-11-25T09:00",
    "overnight": false,
    "price": 98600.0
+  },
+  "BOG-ADZ|2027-05-06": {
+   "airline": "LATAM",
+   "arr": "7:50 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "5:40 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 242700.0
+  },
+  "BOG-ADZ|2027-05-07": {
+   "last_attempt": "2026-11-25T22:42"
+  },
+  "BOG-ADZ|2027-05-08": {
+   "last_attempt": "2026-11-25T22:42"
+  },
+  "BOG-ADZ|2027-05-09": {
+   "airline": "JetSMART",
+   "arr": "7:15 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "3:30 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 132000.0
   },
   "BOG-BAQ|2027-03-01": {
    "airline": "JetSMART",
@@ -2585,11 +3616,38 @@
    "overnight": false,
    "price": 156390.0
   },
+  "BOG-BAQ|2027-03-29": {
+   "airline": "JetSMART",
+   "arr": "10:34 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "8:55 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 102600.0
+  },
+  "BOG-BAQ|2027-03-30": {
+   "last_attempt": "2026-11-25T22:42"
+  },
+  "BOG-BAQ|2027-03-31": {
+   "last_attempt": "2026-11-25T22:42"
+  },
   "BOG-BAQ|2027-04-01": {
    "last_attempt": "2026-11-25T09:00"
   },
+  "BOG-BAQ|2027-04-02": {
+   "last_attempt": "2026-11-25T22:42"
+  },
   "BOG-BAQ|2027-04-03": {
    "last_attempt": "2026-11-25T09:00"
+  },
+  "BOG-BAQ|2027-04-04": {
+   "airline": "JetSMART",
+   "arr": "9:04 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "7:30 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 102600.0
   },
   "BOG-BAQ|2027-04-05": {
    "airline": "JetSMART",
@@ -2600,6 +3658,15 @@
    "overnight": false,
    "price": 116160.0
   },
+  "BOG-BAQ|2027-04-06": {
+   "airline": "JetSMART",
+   "arr": "5:50 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "4:15 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 102600.0
+  },
   "BOG-BAQ|2027-04-07": {
    "airline": "JetSMART",
    "arr": "8:57 p.m.",
@@ -2609,12 +3676,30 @@
    "overnight": false,
    "price": 108190.0
   },
+  "BOG-BAQ|2027-04-08": {
+   "airline": "JetSMART",
+   "arr": "6:45 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "5:10 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 102600.0
+  },
   "BOG-BAQ|2027-04-09": {
    "airline": "Wingo",
    "arr": "7:37 a.m.",
    "checked": "2026-11-25T09:00",
    "dep": "6:00 a.m.",
    "last_attempt": "2026-11-25T09:00",
+   "overnight": false,
+   "price": 199820.0
+  },
+  "BOG-BAQ|2027-04-10": {
+   "airline": "Wingo",
+   "arr": "6:22 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "4:45 p.m.",
+   "last_attempt": "2026-11-25T22:42",
    "overnight": false,
    "price": 199820.0
   },
@@ -2627,11 +3712,38 @@
    "overnight": false,
    "price": 116160.0
   },
+  "BOG-BAQ|2027-04-12": {
+   "airline": "JetSMART",
+   "arr": "12:59 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "11:25 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 102600.0
+  },
   "BOG-BAQ|2027-04-13": {
    "last_attempt": "2026-11-25T09:00"
   },
+  "BOG-BAQ|2027-04-14": {
+   "airline": "Wingo",
+   "arr": "3:37 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "2:00 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 199820.0
+  },
   "BOG-BAQ|2027-04-15": {
    "last_attempt": "2026-11-25T09:00"
+  },
+  "BOG-BAQ|2027-04-16": {
+   "airline": "Wingo",
+   "arr": "7:37 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "6:00 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 199820.0
   },
   "BOG-BAQ|2027-04-17": {
    "airline": "Wingo",
@@ -2642,8 +3754,26 @@
    "overnight": false,
    "price": 199820.0
   },
+  "BOG-BAQ|2027-04-18": {
+   "airline": "JetSMART",
+   "arr": "1:17 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "5:55 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 103550.0
+  },
   "BOG-BAQ|2027-04-19": {
    "last_attempt": "2026-11-25T09:00"
+  },
+  "BOG-BAQ|2027-04-20": {
+   "airline": "Wingo",
+   "arr": "7:37 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "6:00 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 199820.0
   },
   "BOG-BAQ|2027-04-21": {
    "airline": "Wingo",
@@ -2654,8 +3784,26 @@
    "overnight": false,
    "price": 199820.0
   },
+  "BOG-BAQ|2027-04-22": {
+   "airline": "Wingo",
+   "arr": "7:37 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "6:00 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 199820.0
+  },
   "BOG-BAQ|2027-04-23": {
    "last_attempt": "2026-11-25T09:00"
+  },
+  "BOG-BAQ|2027-04-24": {
+   "airline": "Wingo",
+   "arr": "6:22 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "4:45 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 199820.0
   },
   "BOG-BAQ|2027-04-25": {
    "airline": "Wingo",
@@ -2666,12 +3814,24 @@
    "overnight": false,
    "price": 199820.0
   },
+  "BOG-BAQ|2027-04-26": {
+   "last_attempt": "2026-11-25T22:42"
+  },
   "BOG-BAQ|2027-04-27": {
    "airline": "Wingo",
    "arr": "7:37 a.m.",
    "checked": "2026-11-25T09:00",
    "dep": "6:00 a.m.",
    "last_attempt": "2026-11-25T09:00",
+   "overnight": false,
+   "price": 199820.0
+  },
+  "BOG-BAQ|2027-04-28": {
+   "airline": "Wingo",
+   "arr": "3:37 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "2:00 p.m.",
+   "last_attempt": "2026-11-25T22:42",
    "overnight": false,
    "price": 199820.0
   },
@@ -2684,6 +3844,15 @@
    "overnight": false,
    "price": 199820.0
   },
+  "BOG-BAQ|2027-04-30": {
+   "airline": "Wingo",
+   "arr": "7:37 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "6:00 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 199820.0
+  },
   "BOG-BAQ|2027-05-01": {
    "airline": "Wingo",
    "arr": "6:22 p.m.",
@@ -2693,12 +3862,75 @@
    "overnight": false,
    "price": 199820.0
   },
+  "BOG-BAQ|2027-05-02": {
+   "airline": "Wingo",
+   "arr": "4:57 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "3:20 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 199820.0
+  },
   "BOG-BAQ|2027-05-03": {
    "airline": "Wingo",
    "arr": "7:37 a.m.",
    "checked": "2026-11-25T09:00",
    "dep": "6:00 a.m.",
    "last_attempt": "2026-11-25T09:00",
+   "overnight": false,
+   "price": 199820.0
+  },
+  "BOG-BAQ|2027-05-04": {
+   "airline": "Wingo",
+   "arr": "7:37 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "6:00 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 199820.0
+  },
+  "BOG-BAQ|2027-05-05": {
+   "airline": "Wingo",
+   "arr": "3:37 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "2:00 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 199820.0
+  },
+  "BOG-BAQ|2027-05-06": {
+   "airline": "Wingo",
+   "arr": "7:37 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "6:00 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 199820.0
+  },
+  "BOG-BAQ|2027-05-07": {
+   "airline": "Wingo",
+   "arr": "7:37 a.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "6:00 a.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 199820.0
+  },
+  "BOG-BAQ|2027-05-08": {
+   "airline": "Wingo",
+   "arr": "6:22 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "4:45 p.m.",
+   "last_attempt": "2026-11-25T22:42",
+   "overnight": false,
+   "price": 199820.0
+  },
+  "BOG-BAQ|2027-05-09": {
+   "airline": "Wingo",
+   "arr": "4:57 p.m.",
+   "checked": "2026-11-25T22:42",
+   "dep": "3:20 p.m.",
+   "last_attempt": "2026-11-25T22:42",
    "overnight": false,
    "price": 199820.0
   }

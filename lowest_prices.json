@@ -163,15 +163,15 @@
     ]
   },
   "BOG-BAQ-2026-12-16": {
-    "price": 172570.0,
+    "price": 158770.0,
     "details": {
       "source": "Google Flights",
       "url": "https://www.google.com/travel/flights/search?tfs=CBwQAhoeEgoyMDI2LTEyLTE2agcIARIDQk9HcgcIARIDQkFRQAFIAXABggELCP___________wGYAQI&tfu=EgYIAhAAGAA&hl=es-419&curr=COP",
-      "dep_time": "11:00 a.m.",
-      "arr_time": "12:39 p.m.",
-      "airline": "JetSMART"
+      "dep_time": "9:10 a.m.",
+      "arr_time": "10:45 a.m.",
+      "airline": "LATAM"
     },
-    "found_at": "2026-11-18 06:13:55.714401",
+    "found_at": "2026-11-26 21:22:54.502816",
     "history": [
       {
         "price": 208150.0,
@@ -187,19 +187,24 @@
         "price": 172570.0,
         "airline": "JetSMART",
         "found_at": "2026-11-18 06:13:55.714388"
+      },
+      {
+        "price": 158770.0,
+        "airline": "LATAM",
+        "found_at": "2026-11-26 21:22:54.502816"
       }
     ]
   },
   "BOG-BAQ-2026-12-17": {
-    "price": 172570.0,
+    "price": 158770.0,
     "details": {
       "source": "Google Flights",
       "url": "https://www.google.com/travel/flights/search?tfs=CBwQAhoeEgoyMDI2LTEyLTE3agcIARIDQk9HcgcIARIDQkFRQAFIAXABggELCP___________wGYAQI&tfu=EgYIAhAAGAA&hl=es-419&curr=COP",
-      "dep_time": "7:40 p.m.",
-      "arr_time": "9:19 p.m.",
-      "airline": "JetSMART"
+      "dep_time": "9:10 a.m.",
+      "arr_time": "10:45 a.m.",
+      "airline": "LATAM"
     },
-    "found_at": "2026-11-15 10:24:25.913950",
+    "found_at": "2026-11-26 21:22:54.502816",
     "history": [
       {
         "price": 265865.0,
@@ -220,19 +225,24 @@
         "price": 172570.0,
         "airline": "JetSMART",
         "found_at": "2026-11-15 10:24:25.913940"
+      },
+      {
+        "price": 158770.0,
+        "airline": "LATAM",
+        "found_at": "2026-11-26 21:22:54.502816"
       }
     ]
   },
   "BOG-BAQ-2026-12-18": {
-    "price": 220050.0,
+    "price": 201010.0,
     "details": {
       "source": "Google Flights",
       "url": "https://www.google.com/travel/flights/search?tfs=CBwQAhoeEgoyMDI2LTEyLTE4agcIARIDQk9HcgcIARIDQkFRQAFIAXABggELCP___________wGYAQI&tfu=EgYIAhAAGAA&hl=es-419&curr=COP",
-      "dep_time": "5:00 a.m.",
-      "arr_time": "6:35 a.m.",
-      "airline": "LATAM"
+      "dep_time": "10:30 p.m.",
+      "arr_time": "12:05 a.m.",
+      "airline": "+1\nLATAM"
     },
-    "found_at": "2026-11-14 10:43:34.715499",
+    "found_at": "2026-11-26 21:22:54.502816",
     "history": [
       {
         "price": 275385.0,
@@ -248,6 +258,11 @@
         "price": 220050.0,
         "airline": "LATAM",
         "found_at": "2026-11-14 10:43:34.715487"
+      },
+      {
+        "price": 201010.0,
+        "airline": "+1\nLATAM",
+        "found_at": "2026-11-26 21:22:54.502816"
       }
     ]
   },
